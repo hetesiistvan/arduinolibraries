@@ -24,17 +24,25 @@ void Logger::setLogLevel(int setLevel) {
 }
 
 void Logger::logMessage(int level, String message) {
-  if (level >= logLevel && Serial) {
+  if (level <= logLevel && Serial) {
     Serial.print(LOG_MESSAGES[level]);
     Serial.println(message);
   }
 }
 
 void Logger::logMessage(int level, String message, int value) {
-  if (level >= logLevel && Serial) {
+  if (level <= logLevel && Serial) {
     Serial.print(LOG_MESSAGES[level]);
     Serial.print(message);
     Serial.println(value);
+  }
+}
+
+void Logger::logMessage(int level, String message, String arg) {
+  if (level <= logLevel && Serial) {
+    Serial.print(LOG_MESSAGES[level]);
+    Serial.print(message);
+    Serial.println(arg);
   }
 }
 
@@ -47,6 +55,10 @@ void Logger::logFatal(String message, int value) {
   logMessage(LOG_LEVEL_FATAL, message, value);
 }
 
+void Logger::logFatal(String message, String arg) {
+  logMessage(LOG_LEVEL_FATAL, message, arg);
+}
+
 void Logger::logError(String message) {
   logMessage(LOG_LEVEL_ERROR, message);
 }
@@ -54,6 +66,10 @@ void Logger::logError(String message) {
 
 void Logger::logError(String message, int value) {
   logMessage(LOG_LEVEL_ERROR, message, value);
+}
+
+void Logger::logError(String message, String arg) {
+  logMessage(LOG_LEVEL_ERROR, message, arg);
 }
 
 void Logger::logWarn(String message) {
@@ -65,6 +81,10 @@ void Logger::logWarn(String message, int value) {
   logMessage(LOG_LEVEL_WARN, message, value);
 }
 
+void Logger::logWarn(String message, String arg) {
+  logMessage(LOG_LEVEL_WARN, message, arg);
+}
+
 void Logger::logInfo(String message) {
   logMessage(LOG_LEVEL_INFO, message);
 }
@@ -73,10 +93,18 @@ void Logger::logInfo(String message, int value) {
   logMessage(LOG_LEVEL_INFO, message, value);
 }
 
+void Logger::logInfo(String message, String arg) {
+  logMessage(LOG_LEVEL_INFO, message, arg);
+}
+
 void Logger::logDebug(String message) {
   logMessage(LOG_LEVEL_DEBUG, message);
 }
 
 void Logger::logDebug(String message, int value) {
   logMessage(LOG_LEVEL_DEBUG, message, value);
+}
+
+void Logger::logDebug(String message, String arg) {
+  logMessage(LOG_LEVEL_DEBUG, message, arg);
 }
