@@ -1,14 +1,7 @@
 #include <Arduino.h>
 #include <Logger.h>
 
-Logger::Logger(int setLevel):
-  LOG_MESSAGES {
-    F("LOG FATAL: "),
-    F("LOG ERROR: "),
-    F("LOG WARN"),
-    F("LOG INFO: "),
-    F("LOG DEBUG: ")
-  }
+Logger::Logger(int setLevel)
 {
   setLogLevel(setLevel);
 }
@@ -23,16 +16,29 @@ void Logger::setLogLevel(int setLevel) {
   }
 }
 
+String Logger::getLogPrefix(int level) {
+	// Log message prefixes are not defined in the order of their log level,
+	// but in the probability of their usage. This was done to save execution time.
+	switch (level) {
+		case LOG_LEVEL_INFO : return F("LOG INFO: ");
+		case LOG_LEVEL_ERROR : return F("LOG ERROR: ");
+		case LOG_LEVEL_DEBUG : return F("LOG DEBUG: ");
+		case LOG_LEVEL_WARN : return F("LOG WARN");
+		case LOG_LEVEL_FATAL : return F("LOG FATAL: ");
+		default: return F("UNKNOWN LOG LEVEL: ");
+	}
+}
+
 void Logger::logMessage(int level, String message) {
   if (level <= logLevel && Serial) {
-    Serial.print(LOG_MESSAGES[level]);
+    Serial.print(getLogPrefix(level));
     Serial.println(message);
   }
 }
 
 void Logger::logMessage(int level, String message, int value) {
   if (level <= logLevel && Serial) {
-    Serial.print(LOG_MESSAGES[level]);
+    Serial.print(getLogPrefix(level));
     Serial.print(message);
     Serial.println(value);
   }
@@ -40,7 +46,7 @@ void Logger::logMessage(int level, String message, int value) {
 
 void Logger::logMessage(int level, String message, String arg) {
   if (level <= logLevel && Serial) {
-    Serial.print(LOG_MESSAGES[level]);
+    Serial.print(getLogPrefix(level));
     Serial.print(message);
     Serial.println(arg);
   }

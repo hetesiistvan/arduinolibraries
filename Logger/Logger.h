@@ -3,15 +3,15 @@
 
 #include <Arduino.h>
 
+#define LOG_LEVEL_FATAL 0
+#define LOG_LEVEL_ERROR 1
+#define LOG_LEVEL_WARN 2
+#define LOG_LEVEL_INFO 3
+#define LOG_LEVEL_DEBUG 4
+
 class Logger
 {
   public:
-    static const int LOG_LEVEL_FATAL = 0;
-    static const int LOG_LEVEL_ERROR = 1;
-    static const int LOG_LEVEL_WARN = 2;
-    static const int LOG_LEVEL_INFO = 3;
-    static const int LOG_LEVEL_DEBUG = 4;
-
     Logger(int setLevel);
     void setLogLevel(int setLevel);
 
@@ -33,7 +33,8 @@ class Logger
 
   private:
     int logLevel;
-    String LOG_MESSAGES[5];
+
+	String getLogPrefix(int level);
 
     void logMessage(int level, String message);
     void logMessage(int level, String message, int value);
