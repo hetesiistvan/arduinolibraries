@@ -3,9 +3,14 @@
 #include <CommandHandler.h>
 #include <Arduino.h>
 
-SerialInputHandler::SerialInputHandler(Logger &refLogger, CommandHandler &refCommandHandler) {
-  logger = refLogger;
-  commandHandler = refCommandHandler;
+SerialInputHandler::SerialInputHandler(Logger &logger, CommandHandler &commandHandler, int inputBufferLength)
+	: logger(logger), commandHandler(commandHandler) {
+	this->inputBufferLength = inputBufferLength;
+}
+
+void SerialInputHandler::initSerialInputHandler() {
+	inputBuffer.reserve(inputBufferLength);
+	resetInputBuffer();
 }
 
 void SerialInputHandler::handleSerialInput() {
@@ -27,7 +32,7 @@ void SerialInputHandler::processSerialInputByte(char input) {
 
 void SerialInputHandler::handleCommandReceived() {
   logger.logDebug(F("Command received: "), inputBuffer);
-  handleCommand(inputBuffer);
+  commandHandler.handleCommand(inputBuffer);
   resetInputBuffer();
 }
 
@@ -40,7 +45,7 @@ void SerialInputHandler::checkBufferLimit() {
 
 void SerialInputHandler::rejectInput(String errorMsg) {
   logger.logError(errorMsg, inputBuffer);
-  handleError(errorMsg, inputBuffer);
+  commandHandler.handleError(errorMsg, inputBuffer);
   resetInputBuffer();
 }
 

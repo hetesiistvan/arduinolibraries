@@ -5,21 +5,24 @@
 #include <CommandHandler.h>
 #include <Arduino.h>
 
+#define INPUT_BUFFER_MAX_LEN 30
+
 class SerialInputHandler
 {
   public:
-    SerialInputHandler(Logger &refLogger, CommandHandler &refCommandHandler);
+    SerialInputHandler(Logger &logger, CommandHandler &commandHandler, int inputBufferLength = INPUT_BUFFER_MAX_LEN);
 
+	void initSerialInputHandler();
     void handleSerialInput();
     void checkSerialTimeout();
 
   private:
     // TODO kishete 2017.12.28: add a getter - setter pair for those members
-    Logger &logger;
-    CommandHandler &commandHandler;
+    Logger logger;
+    CommandHandler commandHandler;
 
-    char inputBuffer[10];
-    byte inputBufferLength = 30;
+    String inputBuffer;
+    byte inputBufferLength;
     unsigned int timeout = 0; // Timeout value in milisecond
     unsigned long timerStartValue = 0; // Current start time in miliseconds
 
