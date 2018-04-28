@@ -2,7 +2,7 @@
 #include <Logger.h>
 #include <Arduino.h>
 
-CommandHandler::CommandHandler(Logger & logger): logger(logger) {
+CommandHandler::CommandHandler(Logger& logger): logger(logger) {
 }
 
 void CommandHandler::addCommandHandler() {
@@ -25,7 +25,7 @@ void CommandHandler::addDiagHandler() {
 
 }
 
-void CommandHandler::handleCommand(String & input) {
+void CommandHandler::handleCommand(String& input) {
 	// Note that code is here for test purposes
 	if ( input.equals(COMMAND_ON) ) {
     if ( !ledState ) {

@@ -18,8 +18,8 @@ class SerialInputHandler
 
   private:
     // TODO kishete 2017.12.28: add a getter - setter pair for those members
-    Logger logger;
-    CommandHandler commandHandler;
+    Logger& logger;
+    CommandHandler& commandHandler;
 
     String inputBuffer;
     byte inputBufferLength;

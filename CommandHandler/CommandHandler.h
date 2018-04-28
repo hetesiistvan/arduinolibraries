@@ -11,7 +11,7 @@
 class CommandHandler
 {
   public:
-    CommandHandler(Logger & logger);
+    CommandHandler(Logger& logger);
 
     void addCommandHandler();
     void addConfigHandler();
@@ -19,14 +19,14 @@ class CommandHandler
     void addSetHandler();
     void addDiagHandler();
 
-	void handleCommand(String & input);
+	void handleCommand(String& input);
 
     void handleError(String errorMessage);
     void handleError(String errorMessage, String param);
 
   private:
     // TODO kishete 2017.12.28: add a getter - setter pair for that
-    Logger logger;
+    Logger& logger;
 
     const String ERROR_PREFIX = "ERR ";
     const String SUCCESS_PREFIX = "SUC ";

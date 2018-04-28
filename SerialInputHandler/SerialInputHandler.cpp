@@ -3,9 +3,8 @@
 #include <CommandHandler.h>
 #include <Arduino.h>
 
-SerialInputHandler::SerialInputHandler(Logger &logger, CommandHandler &commandHandler, int inputBufferLength)
-	: logger(logger), commandHandler(commandHandler) {
-	this->inputBufferLength = inputBufferLength;
+SerialInputHandler::SerialInputHandler(Logger& logger, CommandHandler& commandHandler, int inputBufferLength)
+	: logger(logger), commandHandler(commandHandler), inputBufferLength(inputBufferLength) {
 }
 
 void SerialInputHandler::initSerialInputHandler() {
