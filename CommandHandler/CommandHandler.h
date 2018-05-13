@@ -1,42 +1,37 @@
 #ifndef CommandHandler_h
 #define CommandHandler_h
 
-#ifndef SWITCH_PIN
 #define SWITCH_PIN 4
-#endif
+#define MAX_IMPLEMENTATIONS 2
 
 #include <Logger.h>
+#include <FlowUtils.h>
+#include <AbstractCommand.h>
 #include <Arduino.h>
 
-class CommandHandler
-{
-  public:
-    CommandHandler(Logger& logger);
+class CommandHandler: public FlowUtils {
+	public:
+		CommandHandler(Logger& logger, byte maxImplementations = MAX_IMPLEMENTATIONS);
 
-    void addCommandHandler();
-    void addConfigHandler();
-    void addGetHandler();
-    void addSetHandler();
-    void addDiagHandler();
+		void addCommandImplementation(AbstractCommand& commandImpl);
 
-	void handleCommand(String& input);
+		void handleCommand(String& input);
 
-    void handleError(String errorMessage);
-    void handleError(String errorMessage, String param);
+	private:
+		Logger& logger;
 
-  private:
-    // TODO kishete 2017.12.28: add a getter - setter pair for that
-    Logger& logger;
+		// Implementation of the commands
+		// AbstractCommand (&commandImplList)[];
+		AbstractCommand** commandImplList;
+		byte commandImplCounter = 0;
+		byte maxCommandImpl;
 
-    const String ERROR_PREFIX = "ERR ";
-    const String SUCCESS_PREFIX = "SUC ";
+		void handleSuccess(String message);
 
-    void handleSuccess(String message);
-
-	// Testing code
-	const String COMMAND_ON = "ON";
-	const String COMMAND_OFF = "OFF";
-	boolean ledState = false;
+		// Testing code
+		const String COMMAND_ON = "ON";
+		const String COMMAND_OFF = "OFF";
+		boolean ledState = false;
 };
 
 #endif
