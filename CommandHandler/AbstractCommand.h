@@ -2,9 +2,9 @@
 #define AbstractCommand_h
 
 #include <Arduino.h>
-#include <FlowUtils.h>
+#include <FlowControl.h>
 
-class AbstractCommand: public FlowUtils
+class AbstractCommand: public FlowControl
 {
 	public:
 		// Processes a command

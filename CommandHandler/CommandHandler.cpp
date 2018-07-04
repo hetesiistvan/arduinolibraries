@@ -43,8 +43,3 @@ void CommandHandler::handleCommand(String& input) {
 		handleError(F("Invalid command specified: "), input);
 	}
 }
-
-void CommandHandler::handleSuccess(String message) {
-	Serial.print(F("SUC "));
-	Serial.println(message);
-}

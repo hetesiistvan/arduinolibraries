@@ -2,13 +2,13 @@
 #define SerialInputHandler_h
 
 #include <Logger.h>
-#include <FlowUtils.h>
+#include <FlowControl.h>
 #include <CommandHandler.h>
 #include <Arduino.h>
 
 #define INPUT_BUFFER_MAX_LEN 30
 
-class SerialInputHandler: public FlowUtils
+class SerialInputHandler: public FlowControl
 {
 	public:
 		SerialInputHandler(Logger &logger, CommandHandler &commandHandler, int inputBufferLength = INPUT_BUFFER_MAX_LEN);

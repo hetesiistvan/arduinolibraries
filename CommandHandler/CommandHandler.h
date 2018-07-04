@@ -5,11 +5,11 @@
 #define MAX_IMPLEMENTATIONS 2
 
 #include <Logger.h>
-#include <FlowUtils.h>
+#include <FlowControl.h>
 #include <AbstractCommand.h>
 #include <Arduino.h>
 
-class CommandHandler: public FlowUtils {
+class CommandHandler: public FlowControl {
 	public:
 		CommandHandler(Logger& logger, byte maxImplementations = MAX_IMPLEMENTATIONS);
 
@@ -25,8 +25,6 @@ class CommandHandler: public FlowUtils {
 		AbstractCommand** commandImplList;
 		byte commandImplCounter = 0;
 		byte maxCommandImpl;
-
-		void handleSuccess(String message);
 
 		// Testing code
 		const String COMMAND_ON = "ON";
