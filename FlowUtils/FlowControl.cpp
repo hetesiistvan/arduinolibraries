@@ -1,11 +1,9 @@
 #include <FlowControl.h>
 #include <Arduino.h>
 
-#define COMMAND_ID_LENGTH 3
-
 void FlowControl::handleError(String errorMessage, boolean closeLine){
 	Serial.print(F("ERR "));
-	Serial.print(checkedParamValue(errorMessage, F("Error message")));
+	Serial.print(checkErrorMessageParameter(errorMessage, F("Error message")));
 	if(closeLine) {
 		Serial.println();
 	}
@@ -13,7 +11,7 @@ void FlowControl::handleError(String errorMessage, boolean closeLine){
 
 void FlowControl::handleError(String errorMessage, String param){
 	handleError(errorMessage, false);
-	Serial.println(checkedParamValue(param, F("Param")));
+	Serial.println(checkErrorMessageParameter(param, F("Param")));
 }
 
 void FlowControl::handleSuccess(String message) {

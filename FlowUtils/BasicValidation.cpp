@@ -5,11 +5,11 @@ bool BasicValidation::isEmpty(String input) {
 	return input == NULL || input.length() == 0;
 }
 
-String BasicValidation::checkedParamValue(String param, String paramName) {
+String BasicValidation::checkErrorMessageParameter(String param, String paramName) {
 	if (!isEmpty(param)) {
 		return param;
 	}
-	String checkedName = isEmpty(paramName) ? F("Param not specified") : paramName;
+	String checkedParamName = isEmpty(paramName) ? F("Param not specified") : paramName;
 	String invalidInputMessage = F("Invalid input: ");
-	return invalidInputMessage + checkedName;
+	return invalidInputMessage + checkedParamName;
 }
