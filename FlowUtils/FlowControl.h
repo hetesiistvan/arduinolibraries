@@ -1,10 +1,10 @@
 #ifndef FlowControl_H
 #define FlowControl_H
 
-#include <BasicValidation.h>
+#include <StringUtils.h>
 #include <Arduino.h>
 
-class FlowControl: public BasicValidation {
+class FlowControl {
 	protected:
 		// Prints an error to the serial line
 		void handleError(String errorMessage, bool closeLine = true);
