@@ -28,6 +28,8 @@ private:
 	byte commandImplCounter = 0;
 	byte maxCommandImpl;
 
+	void decorateCommandImplementation(AbstractCommand& commandImpl);
+
 	// Testing code
 	const String COMMAND_ON = "ON";
 	const String COMMAND_OFF = "OFF";

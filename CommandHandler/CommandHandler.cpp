@@ -8,10 +8,15 @@ CommandHandler::CommandHandler(Logger& logger, FlowControl& flowControl, byte ma
 void CommandHandler::addCommandImplementation(AbstractCommand& commandImpl) {
 	if (commandImplCounter +1 <= maxCommandImpl) {
 		commandImplList[commandImplCounter] = &commandImpl;
+		decorateCommandImplementation(commandImpl);
 		commandImplCounter++;
 	} else {
-
+		flowControl.handleError(F("Limit of command handler implementations exceeded"));
 	}
+}
+
+void CommandHandler::decorateCommandImplementation(AbstractCommand& commandImpl) {
+	commandImpl.setFlowControl(flowControl);
 }
 
 void CommandHandler::handleCommand(String& input) {
