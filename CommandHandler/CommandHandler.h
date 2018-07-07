@@ -9,27 +9,29 @@
 #include <AbstractCommand.h>
 #include <Arduino.h>
 
-class CommandHandler: public FlowControl {
-	public:
-		CommandHandler(Logger& logger, byte maxImplementations = MAX_IMPLEMENTATIONS);
+class CommandHandler
+{
+public:
+	CommandHandler(Logger& logger, FlowControl& flowControl, byte maxImplementations = MAX_IMPLEMENTATIONS);
 
-		void addCommandImplementation(AbstractCommand& commandImpl);
+	void addCommandImplementation(AbstractCommand& commandImpl);
 
-		void handleCommand(String& input);
+	void handleCommand(String& input);
 
-	private:
-		Logger& logger;
+private:
+	Logger& logger;
+	FlowControl& flowControl;
 
-		// Implementation of the commands
-		// AbstractCommand (&commandImplList)[];
-		AbstractCommand** commandImplList;
-		byte commandImplCounter = 0;
-		byte maxCommandImpl;
+	// Implementation of the commands
+	// AbstractCommand (&commandImplList)[];
+	AbstractCommand** commandImplList;
+	byte commandImplCounter = 0;
+	byte maxCommandImpl;
 
-		// Testing code
-		const String COMMAND_ON = "ON";
-		const String COMMAND_OFF = "OFF";
-		boolean ledState = false;
+	// Testing code
+	const String COMMAND_ON = "ON";
+	const String COMMAND_OFF = "OFF";
+	boolean ledState = false;
 };
 
 #endif

@@ -1,8 +1,7 @@
 #include <CommandHandler.h>
-#include <Logger.h>
-#include <Arduino.h>
 
-CommandHandler::CommandHandler(Logger& logger, byte maxImplementations): logger(logger) {
+CommandHandler::CommandHandler(Logger& logger, FlowControl& flowControl, byte maxImplementations)
+	: logger(logger), flowControl(flowControl) {
 	commandImplList = new AbstractCommand*[maxImplementations];
 }
 
@@ -23,7 +22,7 @@ void CommandHandler::handleCommand(String& input) {
 			digitalWrite(LED_BUILTIN, HIGH);
 			digitalWrite(SWITCH_PIN, HIGH);
 			ledState = true;
-			handleSuccess(F("Switch turned on"));
+			flowControl.handleSuccess(F("Switch turned on"));
 		} else {
 			logger.logDebug(F("LED already turned on"));
 		}
@@ -33,13 +32,13 @@ void CommandHandler::handleCommand(String& input) {
 			digitalWrite(LED_BUILTIN, LOW);
 			digitalWrite(SWITCH_PIN, LOW);
 			ledState = false;
-			handleSuccess(F("Switch turned off"));
+			flowControl.handleSuccess(F("Switch turned off"));
 		}
 		else {
 			logger.logDebug(F("LED already turned off"));
 		}
 	} else {
 		logger.logError(F("Invalid command specified: "), input);
-		handleError(F("Invalid command specified: "), input);
+		flowControl.handleError(F("Invalid command specified: "), input);
 	}
 }

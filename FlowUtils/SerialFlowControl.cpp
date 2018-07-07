@@ -1,5 +1,4 @@
 #include <SerialFlowControl.h>
-#include <Arduino.h>
 
 String SerialFlowControl::checkErrorMessageParameter(String param, String paramName) {
 	if (!isEmpty(param)) {
@@ -16,7 +15,7 @@ void SerialFlowControl::handleError(String errorMessage, boolean closeLine) {
 		return;
 	}
 
-	Serial.print(F("ERR "));
+	Serial.print(getErrPrefix());
 	Serial.print(checkErrorMessageParameter(errorMessage, F("Error message")));
 	if(closeLine) {
 		Serial.println();
@@ -48,6 +47,6 @@ void SerialFlowControl::handleSuccess(String message) {
 		return;
 	}
 
-	Serial.print(F("SUC "));
+	Serial.print(getSucPrefix());
 	Serial.println(message);
 }

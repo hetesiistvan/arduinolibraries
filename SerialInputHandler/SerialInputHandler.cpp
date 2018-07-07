@@ -1,10 +1,7 @@
 #include <SerialInputHandler.h>
-#include <Logger.h>
-#include <CommandHandler.h>
-#include <Arduino.h>
 
-SerialInputHandler::SerialInputHandler(Logger& logger, CommandHandler& commandHandler, int inputBufferLength)
-	: logger(logger), commandHandler(commandHandler), inputBufferLength(inputBufferLength) {
+SerialInputHandler::SerialInputHandler(Logger& logger, CommandHandler& commandHandler, FlowControl& flowControl, int inputBufferLength)
+	: logger(logger), commandHandler(commandHandler), flowControl(flowControl), inputBufferLength(inputBufferLength) {
 }
 
 void SerialInputHandler::initSerialInputHandler() {
@@ -44,7 +41,7 @@ void SerialInputHandler::checkBufferLimit() {
 
 void SerialInputHandler::rejectInput(String errorMsg) {
 	logger.logError(errorMsg, inputBuffer);
-	handleError(errorMsg, inputBuffer);
+	flowControl.handleError(errorMsg, inputBuffer);
 	resetInputBuffer();
 }
 

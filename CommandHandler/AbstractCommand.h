@@ -6,13 +6,13 @@
 
 class AbstractCommand: public FlowControl
 {
-	public:
-		// Processes a command
-		// Parameter should contain the full command input from the user
-		virtual void processCommand(String& command) = 0;
-		// Checks if a command is supported by that specific implementation or not
-		// Parameter should contain the full command input from the user
-		virtual bool supportsCommand(String& command) = 0;
+public:
+	// Processes a command
+	// Parameter should contain the full command input from the user
+	virtual void processCommand(String& command) = 0;
+	// Checks if a command is supported by that specific implementation or not
+	// Parameter should contain the full command input from the user
+	virtual bool supportsCommand(String& command) = 0;
 };
 
 #endif
