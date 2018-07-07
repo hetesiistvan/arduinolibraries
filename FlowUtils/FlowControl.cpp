@@ -1,6 +1,15 @@
 #include <FlowControl.h>
 #include <Arduino.h>
 
+String FlowControl::checkErrorMessageParameter(String param, String paramName) {
+	if (!isEmpty(param)) {
+		return param;
+	}
+	String checkedParamName = isEmpty(paramName) ? F("Param not specified") : paramName;
+	String invalidInputMessage = F("Invalid input: ");
+	return invalidInputMessage + checkedParamName;
+}
+
 void FlowControl::handleError(String errorMessage, boolean closeLine){
 	Serial.print(F("ERR "));
 	Serial.print(checkErrorMessageParameter(errorMessage, F("Error message")));
