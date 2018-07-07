@@ -7,7 +7,7 @@
 class FlowControl {
 	protected:
 		// Prints an error to the serial line
-		void handleError(String errorMessage, bool closeLine = true);
+		void handleError(String errorMessage);
 		// Prints an error and a parameter to the serial line
 		void handleError(String errorMessage, String param);
 		// Prints success message to the serial line
@@ -21,6 +21,9 @@ class FlowControl {
 		// Return: the param value if it's not empty else the paramName or
 		// that is not defined either then a generic error message
 		String checkErrorMessageParameter(String param, String paramName);
+
+		// Prints an error to the serial line
+		void handleError(String errorMessage, bool closeLine);
 };
 
 #endif

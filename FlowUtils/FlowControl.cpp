@@ -18,6 +18,10 @@ void FlowControl::handleError(String errorMessage, boolean closeLine){
 	}
 }
 
+void FlowControl::handleError(String errorMessage){
+	handleError(errorMessage, true);
+}
+
 void FlowControl::handleError(String errorMessage, String param){
 	handleError(errorMessage, false);
 	Serial.println(checkErrorMessageParameter(param, F("Param")));
