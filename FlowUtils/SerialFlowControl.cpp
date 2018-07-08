@@ -1,52 +1,51 @@
 #include <SerialFlowControl.h>
 
-String SerialFlowControl::checkErrorMessageParameter(String param, String paramName) {
-	if (!isEmpty(param)) {
-		return param;
-	}
-	String checkedParamName = isEmpty(paramName) ? F("Param not specified") : paramName;
-	String invalidInputMessage = F("Invalid input: ");
-	return invalidInputMessage + checkedParamName;
+SerialFlowControl::SerialFlowControl(Logger& logger): FlowControl(logger) {
 }
 
 void SerialFlowControl::handleError(String errorMessage, boolean closeLine) {
-	if (! Serial ) {
-		// Ignoring message if the serial line is not prepared
-		return;
-	}
-
 	Serial.print(getErrPrefix());
-	Serial.print(checkErrorMessageParameter(errorMessage, F("Error message")));
+	Serial.print(errorMessage);
 	if(closeLine) {
 		Serial.println();
 	}
 }
 
 void SerialFlowControl::handleError(String errorMessage) {
+	String checkedMessage = prepareErrorMessage(errorMessage);
+	FlowControl::handleError(checkedMessage);
+
 	if (! Serial ) {
 		// Ignoring message if the serial line is not prepared
 		return;
 	}
 
-	handleError(errorMessage, true);
+	handleError(checkedMessage, true);
 }
 
 void SerialFlowControl::handleError(String errorMessage, String param) {
+	String checkedMessage = prepareErrorMessage(errorMessage);
+	String checkedParam = prepareErrorParameter(param);
+	FlowControl::handleError(checkedMessage, checkedParam);
+
 	if (! Serial ) {
 		// Ignoring message if the serial line is not prepared
 		return;
 	}
 
-	handleError(errorMessage, false);
-	Serial.println(checkErrorMessageParameter(param, F("Param")));
+	handleError(checkedMessage, false);
+	Serial.println(checkedParam);
 }
 
 void SerialFlowControl::handleSuccess(String message) {
+	String checkedMessage = prepareSuccessMessage(message);
+	FlowControl::handleSuccess(checkedMessage);
+
 	if (! Serial ) {
 		// Ignoring message if the serial line is not prepared
 		return;
 	}
 
 	Serial.print(getSucPrefix());
-	Serial.println(message);
+	Serial.println(checkedMessage);
 }

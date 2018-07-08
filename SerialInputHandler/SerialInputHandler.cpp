@@ -40,7 +40,6 @@ void SerialInputHandler::checkBufferLimit() {
 }
 
 void SerialInputHandler::rejectInput(String errorMsg) {
-	logger.logError(errorMsg, inputBuffer);
 	flowControl.handleError(errorMsg, inputBuffer);
 	resetInputBuffer();
 }

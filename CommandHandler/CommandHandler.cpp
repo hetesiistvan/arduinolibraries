@@ -10,6 +10,7 @@ void CommandHandler::addCommandImplementation(AbstractCommand& commandImpl) {
 		commandImplList[commandImplCounter] = &commandImpl;
 		decorateCommandImplementation(commandImpl);
 		commandImplCounter++;
+		logger.logDebug(F("Added new command implementation"));
 	} else {
 		flowControl.handleError(F("Limit of command handler implementations exceeded"));
 	}
@@ -43,7 +44,6 @@ void CommandHandler::handleCommand(String& input) {
 			logger.logDebug(F("LED already turned off"));
 		}
 	} else {
-		logger.logError(F("Invalid command specified: "), input);
 		flowControl.handleError(F("Invalid command specified: "), input);
 	}
 }
