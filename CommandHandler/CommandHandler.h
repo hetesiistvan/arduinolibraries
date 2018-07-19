@@ -7,6 +7,7 @@
 #include <Logger.h>
 #include <FlowControl.h>
 #include <AbstractCommand.h>
+#include <CommandUtils.h>
 #include <Arduino.h>
 
 class CommandHandler
@@ -28,7 +29,11 @@ private:
 	byte commandImplCounter = 0;
 	byte maxCommandImpl;
 
+	// Command implementation related methods
 	void decorateCommandImplementation(AbstractCommand& commandImpl);
+
+	// Command handling related methods
+	bool validateCommandId(String& input);
 
 	// Testing code
 	const String COMMAND_ON = "ON";
