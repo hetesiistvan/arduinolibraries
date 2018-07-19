@@ -55,6 +55,16 @@ bool CommandHandler::validateCommandId(String& input) {
 	return true;
 }
 
+String CommandHandler::getCommandId(String& input) {
+	// Returning empty string in case of invalid command ID
+	if (!validateCommandId(input)) {
+		return "";
+	}
+
+	String commandId = input.substring(0, COMMAND_ID_LENGTH - 1);
+	return commandId;
+}
+
 void CommandHandler::handleCommand(String& input) {
 	// Note that code is here for test purposes
 	if ( input.equals(COMMAND_ON) ) {
