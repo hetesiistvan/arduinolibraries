@@ -8,16 +8,11 @@ CommandHandler::CommandHandler(Logger& logger, FlowControl& flowControl, byte ma
 void CommandHandler::addCommandImplementation(AbstractCommand& commandImpl) {
 	if (commandImplCounter +1 <= maxCommandImpl) {
 		commandImplList[commandImplCounter] = &commandImpl;
-		decorateCommandImplementation(commandImpl);
 		commandImplCounter++;
 		logger.logDebug(F("Added new command implementation"));
 	} else {
 		flowControl.handleError(F("Limit of command handler implementations exceeded"));
 	}
-}
-
-void CommandHandler::decorateCommandImplementation(AbstractCommand& commandImpl) {
-	commandImpl.setFlowControl(flowControl);
 }
 
 bool CommandHandler::validateCommandId(String& input) {
@@ -66,29 +61,33 @@ String CommandHandler::getCommandId(String& input) {
 }
 
 void CommandHandler::handleCommand(String& input) {
-	// Note that code is here for test purposes
-	if ( input.equals(COMMAND_ON) ) {
-		if ( !ledState ) {
-			logger.logDebug(F("Turning on switch"));
-			digitalWrite(LED_BUILTIN, HIGH);
-			digitalWrite(SWITCH_PIN, HIGH);
-			ledState = true;
-			flowControl.handleSuccess(F("Switch turned on"));
-		} else {
-			logger.logDebug(F("LED already turned on"));
-		}
-	} else if ( input.equals(COMMAND_OFF) ) {
-		if ( ledState ) {
-			logger.logDebug(F("Turning off switch"));
-			digitalWrite(LED_BUILTIN, LOW);
-			digitalWrite(SWITCH_PIN, LOW);
-			ledState = false;
-			flowControl.handleSuccess(F("Switch turned off"));
+	String commandId = getCommandId(input);
+	if (isEmpty(commandId)) {
+		// Simply returning since the error was alerady handled by the validation
+		return;
+	}
+
+	String commandParameters = input.substring(COMMAND_ID_LENGTH + 1);
+
+	// Checking if there is an implementation for the command ID or not
+	AbstractCommand* commandImplementation;
+	bool implementationFounded = false;
+	for (byte i = 0; i < maxCommandImpl && !implementationFounded; i++) {
+		commandImplementation = commandImplList[i];
+		if (commandImplementation != NULL) {
+			implementationFounded |= commandImplementation->supportsCommand(commandId);
 		}
 		else {
-			logger.logDebug(F("LED already turned off"));
+			logger.logError("NULL command implementation founded", String(i));
 		}
-	} else {
-		flowControl.handleError(F("Invalid command specified: "), input);
 	}
+
+	if (!implementationFounded) {
+		flowControl.handleError(F("Invalid command ID (no implementation founded)"), commandId);
+		return;
+	}
+
+	logger.logDebug(F("Starting command processing"), input);
+
+	commandImplementation->processCommand(commandId, commandParameters);
 }
