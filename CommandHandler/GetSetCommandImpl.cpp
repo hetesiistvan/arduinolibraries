@@ -1,5 +1,9 @@
 #include <GetSetCommandImpl.h>
 
+GetSetCommandImpl::GetSetCommandImpl(FlowControl& flowControl, Logger& logger)
+	: AbstractCommand(flowControl, logger) {
+}
+
 bool GetSetCommandImpl::supportsCommand(String& command) {
 	bool supports = false;
 	supports |= command.equals(getGetName());

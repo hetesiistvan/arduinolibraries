@@ -35,6 +35,7 @@ private:
 	int logLevel;
 
 	String getLogPrefix(int level);
+	String getLogSeparator();
 
 	void logMessage(int level, String message);
 	void logMessage(int level, String message, int value);

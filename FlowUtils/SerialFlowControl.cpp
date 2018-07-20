@@ -9,6 +9,11 @@ void SerialFlowControl::handleError(String errorMessage, boolean closeLine) {
 	if(closeLine) {
 		Serial.println();
 	}
+	else {
+		// Since we use this option when we pass a parameter to the message then we can use this
+		// to write a separator
+		Serial.print(" : ");
+	}
 }
 
 void SerialFlowControl::handleError(String errorMessage) {

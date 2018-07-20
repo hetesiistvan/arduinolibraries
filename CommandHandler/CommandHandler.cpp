@@ -24,7 +24,7 @@ bool CommandHandler::validateCommandId(String& input) {
 	// Checking for the lenght of the input: it must be at least 5 (COMMAND_ID_LENGTH + 2) character
 	// 3 (COMMAND_ID_LENGTH) characters for command ID, a space and at least one char for the rest
 	if (input.length() < COMMAND_ID_LENGTH + 2) {
-		flowControl.handleError(F("Command shorter then 5 character"));
+		flowControl.handleError(F("Command shorter then 5 character"), input);
 		return false;
 	}
 
@@ -42,7 +42,7 @@ bool CommandHandler::validateCommandId(String& input) {
 	// Checking for separator space character after command ID
 	toCheck = input.charAt(COMMAND_ID_LENGTH);
 	if (!isSpace(toCheck)) {
-		flowControl.handleError(F("No space after the command ID"));
+		flowControl.handleError(F("No space after the command ID"), input);
 		return false;
 	}
 
@@ -56,7 +56,7 @@ String CommandHandler::getCommandId(String& input) {
 		return "";
 	}
 
-	String commandId = input.substring(0, COMMAND_ID_LENGTH - 1);
+	String commandId = input.substring(0, COMMAND_ID_LENGTH);
 	return commandId;
 }
 

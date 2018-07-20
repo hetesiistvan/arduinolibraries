@@ -28,6 +28,10 @@ String Logger::getLogPrefix(int level) {
 	}
 }
 
+String Logger::getLogSeparator() {
+	return F(" : ");
+}
+
 void Logger::logMessage(int level, String message) {
 	if (level <= logLevel && Serial) {
 		Serial.print(getLogPrefix(level));
@@ -39,6 +43,7 @@ void Logger::logMessage(int level, String message, int value) {
 	if (level <= logLevel && Serial) {
 		Serial.print(getLogPrefix(level));
 		Serial.print(message);
+		Serial.print(getLogSeparator());
 		Serial.println(value);
 	}
 }
@@ -47,6 +52,7 @@ void Logger::logMessage(int level, String message, String arg) {
 	if (level <= logLevel && Serial) {
 		Serial.print(getLogPrefix(level));
 		Serial.print(message);
+		Serial.print(getLogSeparator());
 		Serial.println(arg);
 	}
 }
