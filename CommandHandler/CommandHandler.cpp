@@ -1,7 +1,7 @@
 #include <CommandHandler.h>
 
 CommandHandler::CommandHandler(Logger& logger, FlowControl& flowControl, byte maxImplementations)
-	: logger(logger), flowControl(flowControl) {
+	: logger(logger), flowControl(flowControl), maxCommandImpl(maxImplementations) {
 	commandImplList = new AbstractCommand*[maxImplementations];
 }
 
