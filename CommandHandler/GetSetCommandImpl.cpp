@@ -1,7 +1,7 @@
 #include <GetSetCommandImpl.h>
 
-GetSetCommandImpl::GetSetCommandImpl(FlowControl& flowControl, Logger& logger)
-	: AbstractCommand(flowControl, logger) {
+GetSetCommandImpl::GetSetCommandImpl(Logger& logger, FlowControl& flowControl)
+	: AbstractCommand(logger, flowControl) {
 }
 
 bool GetSetCommandImpl::supportsCommand(String& command) {

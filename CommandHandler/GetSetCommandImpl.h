@@ -8,7 +8,7 @@
 class GetSetCommandImpl: public AbstractCommand
 {
 public:
-	GetSetCommandImpl(FlowControl& flowControl, Logger& logger);
+	GetSetCommandImpl(Logger& logger, FlowControl& flowControl);
 
 	virtual void processCommand(String& commandId, String& commandParameters);
 	virtual bool supportsCommand(String& command);

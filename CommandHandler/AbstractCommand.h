@@ -8,7 +8,7 @@
 class AbstractCommand
 {
 public:
-	AbstractCommand(FlowControl& flowControl, Logger& logger);
+	AbstractCommand(Logger& logger, FlowControl& flowControl);
 
 	// Processes a command
 	// Parameter commandId contains the ID of the command

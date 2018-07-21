@@ -1,5 +1,5 @@
 #include <AbstractCommand.h>
 
-AbstractCommand::AbstractCommand(FlowControl& flowControl, Logger& logger)
-	: flowControl(flowControl), logger(logger) {
+AbstractCommand::AbstractCommand(Logger& logger, FlowControl& flowControl)
+	: logger(logger), flowControl(flowControl) {
 }
