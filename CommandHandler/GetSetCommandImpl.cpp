@@ -26,7 +26,18 @@ void GetSetCommandImpl::processCommand(String& commandId, String& commandParamet
 }
 
 void GetSetCommandImpl::processGet(String& commandParameters) {
-
+	String line = "0";
+	if (!commandParameters.equals(line)) {
+		flowControl.handleError("Invalid line specified");
+		return;
+	}
+	
+	if (ledState) {
+		flowControl.handleSuccess(F("Switch is ON"));
+	}
+	else {
+		flowControl.handleSuccess(F("Switch is OFF"));
+	}
 }
 
 void GetSetCommandImpl::processSet(String& commandParameters) {
