@@ -60,8 +60,10 @@ void GetSetCommandImpl::processSet(String& commandParameters) {
 
 String GetSetCommandImpl::getGetName() {
 	String getName = F("GET");
+	return getName;
 }
 
 String GetSetCommandImpl::getSetName() {
-	String getName = F("SET");
+	String setName = F("SET");
+	return setName;
 }

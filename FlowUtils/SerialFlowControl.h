@@ -11,11 +11,11 @@ public:
 	SerialFlowControl(Logger& logger);
 
 	// Prints an error to the serial line
-	void virtual handleError(String errorMessage);
+	void virtual handleError(String errorMessage) override;
 	// Prints an error and a parameter to the serial line
-	void virtual handleError(String errorMessage, String param);
+	void virtual handleError(String errorMessage, String param) override;
 	// Prints success message to the serial line
-	void virtual handleSuccess(String message);
+	void virtual handleSuccess(String message) override;
 
 private:
 	// Prints an error to the serial line
