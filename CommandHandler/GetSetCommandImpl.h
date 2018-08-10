@@ -10,8 +10,8 @@ class GetSetCommandImpl: public AbstractCommand
 public:
 	GetSetCommandImpl(Logger& logger, FlowControl& flowControl);
 
-	virtual void processCommand(String& commandId, String& commandParameters);
-	virtual bool supportsCommand(String& command);
+	virtual void processCommand(String& commandId, String& commandParameters) override;
+	virtual bool supportsCommand(String& command) override;
 
 private:
 	// Name of GET command

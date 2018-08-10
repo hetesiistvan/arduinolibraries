@@ -72,9 +72,9 @@ void CommandHandler::handleCommand(String& input) {
 	// Checking if there is an implementation for the command ID or not
 	AbstractCommand* commandImplementation;
 	bool implementationFounded = false;
-	for (byte i = 0; i < maxCommandImpl && !implementationFounded; i++) {
+	for (byte i = 0; i < commandImplCounter && !implementationFounded; i++) {
 		commandImplementation = commandImplList[i];
-		if (commandImplementation != NULL) {
+		if (commandImplementation) {
 			implementationFounded |= commandImplementation->supportsCommand(commandId);
 		}
 		else {
