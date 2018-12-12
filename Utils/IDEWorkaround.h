@@ -1,12 +1,13 @@
 #ifndef IDE_WORKAROUND_H
 #define IDE_WORKAROUND_H
 
-#ifndef ARDUINO_IDE
+#include <Arduino.h>
+
+#ifndef HAVE_HWSERIAL0
 
 // Workaround to define variables which are defined by Arduino IDE
 // but not available in other IDEs
-#include <Arduino.h>
-HardwareSerial Serial;
+HardwareSerial Serial(0, 0, 0, 0, 0, 0);
 
 #endif
 

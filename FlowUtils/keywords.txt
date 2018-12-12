@@ -1,4 +1,4 @@
 FlowControl	KEYWORD1
+SerialFlowControl KEYWORD1
 handleError	KEYWORD2
 handleSuccess	KEYWORD2
-SerialFlowControl KEYWORD1

@@ -1,7 +1,7 @@
 CommandHandler	KEYWORD1
+AbstractCommand	KEYWORD1
+GetSetCommandImpl	KEYWORD1
 addCommandImplementation	KEYWORD2
 handleCommand	KEYWORD2
-AbstractCommand	KEYWORD1
 processCommand	KEYWORD2
 supportsCommand	KEYWORD2
-GetSetCommandImpl	KEYWORD1
