@@ -1,4 +1,5 @@
 #include <SerialInputHandler.h>
+#include <IDEWorkaround.h>
 
 SerialInputHandler::SerialInputHandler(Logger& logger, CommandHandler& commandHandler, FlowControl& flowControl, int inputBufferLength)
 	: logger(logger), commandHandler(commandHandler), flowControl(flowControl), inputBufferLength(inputBufferLength) {

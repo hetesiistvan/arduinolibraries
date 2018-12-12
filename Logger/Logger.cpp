@@ -1,4 +1,5 @@
 #include <Logger.h>
+#include <IDEWorkaround.h>
 
 Logger::Logger(int setLevel)
 {

@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/Libraries/**",
+                "${workspaceFolder}/CommandHandler",
+                "${workspaceFolder}/FlowUtils",
+                "${workspaceFolder}/Logger",
+                "${workspaceFolder}/SerialInputHandler",
+                "${workspaceFolder}/Utils",
+                "/opt/arduino-ide/current/hardware/arduino/avr/cores/arduino",
+                "/opt/arduino-ide/current/hardware/arduino/avr/variants/standard",
+                "/opt/arduino-ide/current/hardware/tools/avr/avr/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

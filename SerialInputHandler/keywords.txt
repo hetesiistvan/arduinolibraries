@@ -1,0 +1,4 @@
+SerialInputHandler	KEYWORD1
+initSerialInputHandler	KEYWORD2
+handleSerialInput	KEYWORD2
+checkSerialTimeout	KEYWORD2

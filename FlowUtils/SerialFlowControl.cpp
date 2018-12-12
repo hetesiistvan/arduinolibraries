@@ -1,4 +1,5 @@
 #include <SerialFlowControl.h>
+#include <IDEWorkaround.h>
 
 SerialFlowControl::SerialFlowControl(Logger& logger): FlowControl(logger) {
 }
