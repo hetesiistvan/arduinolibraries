@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/Libraries/**",
-                "${workspaceFolder}/CommandHandler",
+				"${workspaceFolder}/CommandHandler",
+				"${workspaceFolder}/Drivers",
                 "${workspaceFolder}/FlowUtils",
                 "${workspaceFolder}/Logger",
                 "${workspaceFolder}/SerialInputHandler",
