@@ -18,14 +18,30 @@ private:
 	String getGetName();
 	// Name of SET command
 	String getSetName();
+	// ON state
+	String getOnState();
+	// Off state
+	String getOffState();
 
-	void processGet(String& commandParameters);
-	void processSet(String& commandParameters);
+	// Checking command parameters
+	// Format of the get / set parameters:
+	// First part: Driver ID - 3 uppercase digit selecting the driver to handle the get / set request
+	// Second part: Whitespace - exactly one space character
+	// Third part: Device ID - Numerical ID of the specified device - exactly two digit long
+	// Fourth part (only SET): Whitespace - exactly one space character
+	// Fifth part (only SET): ON / OFF
+	bool validateGetParameters(String& getSetParameters);
+	bool validateSetParameters(String& getSetParameters);
+	bool validateParametersBase(String& getSetParameters);
 
-	// Testing code
-	const String COMMAND_ON = "ON";
-	const String COMMAND_OFF = "OFF";
-	boolean ledState = false;
+	// Parts of the GET / SET command
+	String getDriverId(String& getSetParameters);
+	byte getDeviceId(String& getSetParameters);
+	// States: ON = true, OFF = false
+	bool getDeviceState(String& getSetParameters);
+
+	void processGet(String& getSetParameters);
+	void processSet(String& getSetParameters);
 };
 
 #endif
