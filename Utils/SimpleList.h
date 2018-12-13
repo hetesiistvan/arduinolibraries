@@ -13,7 +13,8 @@ public:
 	SimpleList(Logger& logger, FlowControl& flowControl, byte maxListItems = MAX_LIST_SIZE);
 
 	bool addItem(T& item);
-	T getItem(byte index);
+	T* getItem(byte index);
+	byte getSize();
 
 private:
 	Logger& logger;

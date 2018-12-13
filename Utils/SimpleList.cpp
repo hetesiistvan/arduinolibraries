@@ -2,7 +2,7 @@
 
 template<class T>
 SimpleList<T>::SimpleList(Logger& logger, FlowControl& flowControl, byte maxListItems)
-	: logger(logger), flowControl(flowControl) {
+	: logger(logger), flowControl(flowControl), maxListItems(maxListItems) {
 	listItems = new T*[maxListItems];
 }
 
@@ -24,7 +24,7 @@ bool SimpleList<T>::addItem(T& item) {
 }
 
 template<class T>
-T SimpleList<T>::getItem(byte index) {
+T* SimpleList<T>::getItem(byte index) {
 	if (index < maxListItems) {
 		return listItems[index];
 	}
@@ -32,4 +32,9 @@ T SimpleList<T>::getItem(byte index) {
 		flowControl.handleError(F("Index out of range"), String(index));
 		return NULL;
 	}
+}
+
+template<class T>
+byte SimpleList<T>::getSize() {
+	return listItemCounter;
 }
