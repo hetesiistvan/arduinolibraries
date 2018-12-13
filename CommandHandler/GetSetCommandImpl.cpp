@@ -1,9 +1,5 @@
 #include <GetSetCommandImpl.h>
 
-#define DRIVER_ID_LENGTH 3
-#define DEVICE_ID_LENGTH 2
-#define ON_LENGTH 2
-#define OFF_LENGTH 3
 
 GetSetCommandImpl::GetSetCommandImpl(Logger& logger, FlowControl& flowControl)
 	: AbstractCommand(logger, flowControl) {
@@ -31,14 +27,19 @@ void GetSetCommandImpl::processCommand(String& commandId, String& commandParamet
 }
 
 bool GetSetCommandImpl::validateGetParameters(String& getSetParameters) {
-	if (getSetParameters.length() == DRIVER_ID_LENGTH + 1 + DEVICE_ID_LENGTH) {
-		return validateParametersBase(getSetParameters);
-	}
-	else {
+	if (getSetParameters.length() != DRIVER_ID_LENGTH + 1 + DEVICE_ID_LENGTH) {
 		// Invalid command parameter length
 		flowControl.handleError(F("Invalid get parameter length (must be 6)"), getSetParameters);
 		return false;
 	}
+
+	if (!validateParametersBase(getSetParameters)) {
+		// Invalid base format
+		return false;
+	}
+
+	logger.logDebug(F("Get parameters validated"));
+	return true;
 }
 
 bool GetSetCommandImpl::validateSetParameters(String& getSetParameters) {
@@ -70,6 +71,8 @@ bool GetSetCommandImpl::validateSetParameters(String& getSetParameters) {
 		flowControl.handleError(F("Invalid get parameter length (must be 9 / 10)"), getSetParameters);
 		return false;
 	}
+
+	logger.logDebug(F("Set parameters validated"));
 	return true;
 }
 
@@ -85,7 +88,7 @@ bool GetSetCommandImpl::validateParametersBase(String& getSetParameters) {
 	}
 
 	// Checking space character after that
-	toCheck = getSetParameters.charAt(DRIVER_ID_LENGTH + 1 + DEVICE_ID_LENGTH);
+	toCheck = getSetParameters.charAt(DRIVER_ID_LENGTH);
 	if (!isSpace(toCheck)) {
 		flowControl.handleError(F("No space after driver ID"), getSetParameters);
 		return false;
@@ -94,7 +97,7 @@ bool GetSetCommandImpl::validateParametersBase(String& getSetParameters) {
 	// Checking device ID
 	for(byte i = DRIVER_ID_LENGTH + 1; i < DRIVER_ID_LENGTH + 1 + DEVICE_ID_LENGTH; i++) {
 		toCheck = getSetParameters.charAt(i);
-		if (!isUpperCase(toCheck)) {
+		if (!isDigit(toCheck)) {
 			flowControl.handleError(F("Invalid character in device ID"), String(toCheck));
 			return false;
 		}
@@ -110,7 +113,7 @@ String GetSetCommandImpl::getDriverId(String& getSetParameters) {
 }
 
 byte GetSetCommandImpl::getDeviceId(String& getSetParameters) {
-	String deviceId = getSetParameters.substring(DRIVER_ID_LENGTH + 1, DRIVER_ID_LENGTH + DEVICE_ID_LENGTH);
+	String deviceId = getSetParameters.substring(DRIVER_ID_LENGTH + 1, DRIVER_ID_LENGTH + DEVICE_ID_LENGTH + 1);
 	logger.logDebug(F("Selected device ID"), deviceId);
 	return deviceId.toInt();
 }
@@ -136,7 +139,7 @@ void GetSetCommandImpl::processGet(String& getSetParameters) {
 		return;
 	}
 
-	bool ledState = digitalRead(LED_BUILTIN) == HIGH;
+	bool ledState = digitalRead(SWITCH_PIN) == HIGH;
 	
 	if (ledState) {
 		flowControl.handleSuccess(F("Switch is ON"));
@@ -162,7 +165,7 @@ void GetSetCommandImpl::processSet(String& getSetParameters) {
 		return;
 	}
 
-	bool ledState = digitalRead(LED_BUILTIN) == HIGH;
+	bool ledState = digitalRead(SWITCH_PIN) == HIGH;
 
 	// Note that code is here for test purposes
 	if (onOff) {
@@ -170,7 +173,6 @@ void GetSetCommandImpl::processSet(String& getSetParameters) {
 			logger.logDebug(F("Turning on switch"));
 			digitalWrite(LED_BUILTIN, HIGH);
 			digitalWrite(SWITCH_PIN, HIGH);
-			ledState = true;
 			flowControl.handleSuccess(F("Switch turned on"));
 		} else {
 			logger.logDebug(F("LED already turned on"));
@@ -180,7 +182,6 @@ void GetSetCommandImpl::processSet(String& getSetParameters) {
 			logger.logDebug(F("Turning off switch"));
 			digitalWrite(LED_BUILTIN, LOW);
 			digitalWrite(SWITCH_PIN, LOW);
-			ledState = false;
 			flowControl.handleSuccess(F("Switch turned off"));
 		}
 		else {

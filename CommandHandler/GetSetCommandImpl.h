@@ -3,6 +3,11 @@
 
 #include <AbstractCommand.h>
 
+#define DRIVER_ID_LENGTH 3
+#define DEVICE_ID_LENGTH 2
+#define ON_LENGTH 2
+#define OFF_LENGTH 3
+
 #define SWITCH_PIN 4
 
 class GetSetCommandImpl: public AbstractCommand
