@@ -1,18 +1,13 @@
 #include <CommandHandler.h>
 
 CommandHandler::CommandHandler(Logger& logger, FlowControl& flowControl, byte maxImplementations)
-	: logger(logger), flowControl(flowControl), maxCommandImpl(maxImplementations) {
-	commandImplList = new AbstractCommand*[maxImplementations];
+	: logger(logger), flowControl(flowControl) {
+	commandImplList = SimpleList(logger, flowControl, maxImplementations);
 }
 
 void CommandHandler::addCommandImplementation(AbstractCommand& commandImpl) {
-	if (commandImplCounter +1 <= maxCommandImpl) {
-		commandImplList[commandImplCounter] = &commandImpl;
-		commandImplCounter++;
-		logger.logDebug(F("Added new command implementation"));
-	} else {
-		flowControl.handleError(F("Limit of command handler implementations exceeded"));
-	}
+	logger.logDebug(F("Adding new command implementation"));
+	commandImplList.addItem(commandImpl);
 }
 
 bool CommandHandler::validateCommandId(String& input) {
@@ -72,13 +67,10 @@ void CommandHandler::handleCommand(String& input) {
 	// Checking if there is an implementation for the command ID or not
 	AbstractCommand* commandImplementation;
 	bool implementationFounded = false;
-	for (byte i = 0; i < commandImplCounter && !implementationFounded; i++) {
-		commandImplementation = commandImplList[i];
+	for (byte i = 0; i < commandImplList.getSize() && !implementationFounded; i++) {
+		commandImplementation = commandImplList.getItem(i);
 		if (commandImplementation) {
 			implementationFounded |= commandImplementation->supportsCommand(commandId);
-		}
-		else {
-			logger.logError("NULL command implementation founded", String(i));
 		}
 	}
 

@@ -7,6 +7,7 @@
 #include <Logger.h>
 #include <FlowControl.h>
 #include <AbstractCommand.h>
+#include <SimpleList.h>
 #include <Arduino.h>
 
 class CommandHandler
@@ -23,9 +24,7 @@ private:
 	FlowControl& flowControl;
 
 	// Implementation of the commands
-	AbstractCommand** commandImplList;
-	byte commandImplCounter = 0;
-	byte maxCommandImpl;
+	SimpleList<AbstractCommand> commandImplList;
 
 	// ---- Command handling related methods ----
 	// Validates the command ID. Preconditions of true return value:
