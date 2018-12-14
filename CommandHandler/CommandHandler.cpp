@@ -2,7 +2,8 @@
 
 CommandHandler::CommandHandler(Logger& logger, FlowControl& flowControl, byte maxImplementations)
 	: logger(logger), flowControl(flowControl) {
-	commandImplList = SimpleList(logger, flowControl, maxImplementations);
+	//SimpleList<AbstractCommand> list(logger, flowControl, maxImplementations);
+	commandImplList = new SimpleList(logger, flowControl, maxImplementations);
 }
 
 void CommandHandler::addCommandImplementation(AbstractCommand& commandImpl) {
