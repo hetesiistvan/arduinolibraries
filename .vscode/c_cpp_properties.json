@@ -10,9 +10,9 @@
                 "${workspaceFolder}/Logger",
                 "${workspaceFolder}/SerialInputHandler",
                 "${workspaceFolder}/Utils",
-                "/opt/arduino-ide/current/hardware/arduino/avr/cores/arduino",
-                "/opt/arduino-ide/current/hardware/arduino/avr/variants/standard",
-                "/opt/arduino-ide/current/hardware/tools/avr/avr/include"
+                "${env:ARDUINO_IDE_HOME}/hardware/arduino/avr/cores/arduino",
+                "${env:ARDUINO_IDE_HOME}/hardware/arduino/avr/variants/standard",
+                "${env:ARDUINO_IDE_HOME}/hardware/tools/avr/avr/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
