@@ -18,10 +18,10 @@ build:
   only:
     - master
   script:
-    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest -t arduinobuild .
+    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest -t $CONTAINER_IMAGE:arduinobuild:latest .
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE:latest
-    - docker push arduinobuild
+    - docker push $CONTAINER_IMAGE:arduinobuild:latest
 
 #push_image:
 #  stage: deliver
