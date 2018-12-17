@@ -21,7 +21,7 @@ build:
     - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest -t arduinobuild .
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE:latest
-    - docker push $CONTAINER_IMAGE:arduinobuild
+    - docker push arduinobuild
 
 #push_image:
 #  stage: deliver
