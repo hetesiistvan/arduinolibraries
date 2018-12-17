@@ -25,6 +25,7 @@ push_image:
   only:
     - master
   script:
+    - docker image ls
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE:latest
     - docker push $CONTAINER_IMAGE:arduinobuild
