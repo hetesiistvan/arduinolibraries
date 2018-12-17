@@ -5,10 +5,26 @@ services:
 
 stages:
   - build
+  - deliver
+
+variables:
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
 build:
   stage: build
   only:
     - master
   script:
-    - docker build -t arduinobuild .
+    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest -t arduinobuild .
+
+push_image:
+  stage: deliver
+  only:
+    - master
+  script:
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:arduinobuild
