@@ -1,0 +1,11 @@
+image: docker:stable
+
+stages:
+  - build
+
+build:
+  stage: build
+  only:
+    - master
+  script:
+    - docker build -t arduinobuild .
