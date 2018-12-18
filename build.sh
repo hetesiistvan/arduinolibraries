@@ -5,7 +5,7 @@ if [ -z $CI_PROJECT_PATH ]; then
 	CONTAINER_TAGS="arduinobuild"
 else
 	# Gitlab build
-	CONTAINER_TAGS="--tag $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/arduinobuild:latest"
+	CONTAINER_TAGS="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/arduinobuild:latest"
 fi
 
 case $1 in
