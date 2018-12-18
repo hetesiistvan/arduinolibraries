@@ -17,6 +17,6 @@ build_and_push:
   only:
     - master
   script:
-    - docker build --tag $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/arduinobuild:latest .
+    - ./build.sh build_image
     - docker push $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE/arduinobuild:latest
