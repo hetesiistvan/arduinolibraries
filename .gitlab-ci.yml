@@ -5,6 +5,8 @@ services:
 
 stages:
   - build
+  - test
+  - publish
 
 variables:
   CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
@@ -12,11 +14,27 @@ variables:
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
-build_and_push:
+build-image:
   stage: build
   only:
     - master
   script:
-    - ./build.sh build_image
+    - ./build.sh build-image
     - docker push $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
+
+test-image:
+  stage: test
+  only:
+    - master
+  script:
+    - docker pull $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
+    - ./build.sh test-image
+
+tag-and-push-image:
+  stage: publish
+  only:
+    - master
+  script:
+    - docker pull $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
+    - docker tag $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA $CONTAINER_IMAGE/arduinobuild:latest
     - docker push $CONTAINER_IMAGE/arduinobuild:latest
