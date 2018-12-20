@@ -33,8 +33,6 @@ build_image() {
 	fi
 
 	docker build --tag ${CONTAINER_TAGS} .
-
-	docker build -t 
 }
 
 build_libraries() {
