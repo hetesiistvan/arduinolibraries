@@ -3,32 +3,57 @@
 BASE_IMAGE=registry.gitlab.com/hetesiistvan/arduino-arduinoci/arduinobuild:latest
 
 pull_base_image() {
-	if [ ! -z $CI_PROJECT_PATH ]; then
-		# Build started from Gitlab, taking the credential from there
-		DOCKER_USER=gitlab-ci-token
-		DOCKER_PASSWD=${CI_JOB_TOKEN}
-	else
+	if [ -z $CI_PROJECT_PATH ]; then
 		# Started a local build
 		if [ -z $GITLAB_REGISTRY_TOKEN ]; then
 			GITLAB_REGISTRY_TOKEN=`cat gitlab_registry_token`
 		fi
 		DOCKER_USER=gitlab+deploy-token-33202
 		DOCKER_PASSWD=${GITLAB_REGISTRY_TOKEN}
+
+		docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWD} registry.gitlab.com
 	fi
-	docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWD} registry.gitlab.com
 
 	docker pull $BASE_IMAGE
 
-	docker logout
+	if [ -z $CI_PROJECT_PATH ]; then
+		docker logout
+	fi
 }
 
 build_image() {
 	pull_base_image
+
+	if [ -z $CI_PROJECT_PATH ]; then
+		# Local build
+		CONTAINER_TAGS="arduinolibraries --tag arduinolibraries:latest"
+	else
+		# Gitlab build
+		CONTAINER_TAGS="$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA"
+	fi
+
+	docker build --tag ${CONTAINER_TAGS} .
+
+	docker build -t 
+}
+
+build_libraries() {
+	echo "To be implemented"
+}
+
+test_unit() {
+	echo "To be implemented"
 }
 
 case $1 in
-	build)
+	build-image)
 		build_image
+	;;
+	build-libraries)
+		build_libraries
+	;;
+	test-unit)
+		test_unit
 	;;
 	*)
 		echo "Invalid parameter. Aborting!"

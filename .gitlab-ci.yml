@@ -1,0 +1,49 @@
+image docker:stable
+
+services:
+  - docker:dind
+
+variables:
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+stages:
+- build-image
+- build-libraries
+- test
+- publish
+
+build-image:
+  stage: build-image
+  only:
+    - master
+  script:
+    - ./build.sh build-image
+    - docker push $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+
+build-libraries:
+  stage: build-libraries
+  only:
+    - master
+  script:
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+    - ./build.sh build-libraries
+
+test-unit:
+  stage: test
+  only:
+    - master
+  script:
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+    - ./build.sh build-libraries
+
+push-image:
+  stage: publish
+  only:
+    - master
+  script:
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+    - docker tag $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA $CONTAINER_IMAGE/arduinolibraries:latest
+    - docker push $CONTAINER_IMAGE/arduinolibraries:latest

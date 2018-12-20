@@ -1,0 +1,6 @@
+build.sh
+.gitignore
+.dockerignore
+Dockerfile
+.gitlab-ci.yml
+gitlab_registry_token
