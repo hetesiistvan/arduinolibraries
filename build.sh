@@ -3,10 +3,10 @@
 build_image() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local build
-		CONTAINER_TAGS="arduinobuild"
+		CONTAINER_TAGS="arduinobuild --tag arduinobuild:latest"
 	else
 		# Gitlab build
-		CONTAINER_TAGS="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/arduinobuild:latest"
+		CONTAINER_TAGS="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
 	fi
 
 	docker build --tag ${CONTAINER_TAGS} .
