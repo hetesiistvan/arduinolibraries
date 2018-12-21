@@ -24,6 +24,16 @@ pull_base_image() {
 build_image() {
 	pull_base_image
 
+	# What a nice up-to-date check :)
+	rm -rf build
+	mkdir build
+	cp -r CommandHandler build/
+	cp -r Drivers build/
+	cp -r FlowUtils build/
+	cp -r Logger build/
+	cp -r SerialInputHandler build/
+	cp -r Utils build/
+
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local build
 		CONTAINER_TAGS="arduinolibraries --tag arduinolibraries:latest"

@@ -1,3 +1,3 @@
 FROM arduinobuild:latest
 
-COPY * ${ARDUINO_LIBRARY_FOLDER}/
+COPY build/* ${ARDUINO_LIBRARY_FOLDER}/
