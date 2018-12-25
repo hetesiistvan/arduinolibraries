@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 BASE_IMAGE=registry.gitlab.com/hetesiistvan/arduino-arduinoci/arduinobuild:latest
 
