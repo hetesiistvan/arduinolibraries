@@ -16,9 +16,19 @@ pull_base_image() {
 
 	docker pull $BASE_IMAGE
 
+	if [ ! -z $CI_PROJECT_PATH ]; then
+		# In case of CI build we need to tag the pulled image in order to have a reference
+		# what can be used with the Dockerfile
+		tag_remote_image
+	fi
+
 	if [ -z $CI_PROJECT_PATH ]; then
 		docker logout
 	fi
+}
+
+tag_remote_image() {
+	docker tag $BASE_IMAGE --tag arduinobuild:latest
 }
 
 build_image() {
@@ -62,6 +72,9 @@ case $1 in
 	;;
 	test-unit)
 		test_unit
+	;;
+	tag-remote-image)
+		tag_remote_image
 	;;
 	*)
 		echo "Invalid parameter. Aborting!"
