@@ -28,7 +28,7 @@ pull_base_image() {
 }
 
 tag_remote_image() {
-	docker tag $BASE_IMAGE --tag arduinobuild:latest
+	docker tag $BASE_IMAGE arduinobuild:latest
 }
 
 build_image() {
