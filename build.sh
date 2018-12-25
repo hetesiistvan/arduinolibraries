@@ -34,16 +34,6 @@ tag_remote_base_image() {
 build_image() {
 	pull_base_image
 
-	# What a nice up-to-date check :)
-	rm -rf build
-	mkdir build
-	cp -r CommandHandler build/
-	cp -r Drivers build/
-	cp -r FlowUtils build/
-	cp -r Logger build/
-	cp -r SerialInputHandler build/
-	cp -r Utils build/
-
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local build
 		CONTAINER_TAGS="arduinolibraries --tag arduinolibraries:latest"
@@ -64,8 +54,9 @@ build_libraries() {
 		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
 	fi
 
-	find build -name '*.h' -exec basename {} \; | awk '{ print "#include <" $1 ">" }' > build-test.ino
-	cat << EOF >> build-test.ino
+	mkdir -p build
+	find src -name '*.h' -exec basename {} \; | awk '{ print "#include <" $1 ">" }' > build/build-test.ino
+	cat << EOF >> build/build-test.ino
 
 void setup() {
   // put your setup code here, to run once:
@@ -78,7 +69,9 @@ void loop() {
 }
 EOF
 
-	docker run --rm -v `pwd`:/build-test $LIBRARY_IMAGE_TAG ./build-test/build-libraries-wrapper.sh
+	cp -f build-libraries-wrapper.sh build/build-libraries-wrapper.sh
+
+	docker run --rm -v `pwd`/build:/build-test $LIBRARY_IMAGE_TAG ./build-test/build-libraries-wrapper.sh
 }
 
 test_unit() {
