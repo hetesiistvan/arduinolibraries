@@ -78,6 +78,22 @@ test_unit() {
 	echo "To be implemented"
 }
 
+create_desktop_links() {
+	if [ -z $CI_PROJECT_PATH ]; then
+		# This is only available in local development environment
+		ARDUINO_HOME_DIRECTORY=~/Arduino/libraries
+
+		cd src
+		for DIR_NAME in `ls -1 .`; do
+			echo "Creating link for directory: $DIR_NAME"
+			[ -L $ARDUINO_HOME_DIRECTORY/$DIR_NAME ] && rm $ARDUINO_HOME_DIRECTORY/$DIR_NAME
+			ln -s `pwd`/$DIR_NAME $ARDUINO_HOME_DIRECTORY/$DIR_NAME
+		done
+	else
+		echo "Not supported for CI but only for local development environment."
+	fi
+}
+
 case $1 in
 	build-image)
 		build_image
@@ -90,6 +106,9 @@ case $1 in
 	;;
 	tag-remote-base-image)
 		tag_remote_base_image
+	;;
+	create-desktop-links)
+		create_desktop_links
 	;;
 	*)
 		echo "Invalid parameter. Aborting!"
