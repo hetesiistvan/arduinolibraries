@@ -64,7 +64,7 @@ build_libraries() {
 		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
 	fi
 
-	find build -name '*.h' -printf "#include <%f>\\n" > build-test.ino
+	find build -name '*.h' -exec basename {} \; | awk '{ print "#include <" $1 ">" }' > build-test.ino
 	cat << EOF >> build-test.ino
 
 void setup() {
@@ -78,7 +78,7 @@ void loop() {
 }
 EOF
 
-	docker run -v `pwd`:/build-test $LIBRARY_IMAGE_TAG ./build-test/build-libraries-wrapper.sh
+	docker run --rm -v `pwd`:/build-test $LIBRARY_IMAGE_TAG ./build-test/build-libraries-wrapper.sh
 }
 
 test_unit() {
