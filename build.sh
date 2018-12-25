@@ -19,7 +19,7 @@ pull_base_image() {
 	if [ ! -z $CI_PROJECT_PATH ]; then
 		# In case of CI build we need to tag the pulled image in order to have a reference
 		# what can be used with the Dockerfile
-		tag_remote_image
+		tag_remote_base_image
 	fi
 
 	if [ -z $CI_PROJECT_PATH ]; then
@@ -27,7 +27,7 @@ pull_base_image() {
 	fi
 }
 
-tag_remote_image() {
+tag_remote_base_image() {
 	docker tag $BASE_IMAGE arduinobuild:latest
 }
 
@@ -56,7 +56,29 @@ build_image() {
 }
 
 build_libraries() {
-	echo "To be implemented"
+	if [ -z $CI_PROJECT_PATH ]; then
+		# Local build
+		LIBRARY_IMAGE_TAG=arduinolibraries:latest
+	else
+		# CI build
+		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+	fi
+
+	find build -name '*.h' -printf "#include <%f>\\n" > build-test.ino
+	cat << EOF >> build-test.ino
+
+void setup() {
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
+EOF
+
+	docker run -v `pwd`:/build-test $LIBRARY_IMAGE_TAG ./build-test/build-libraries-wrapper.sh
 }
 
 test_unit() {
@@ -73,8 +95,8 @@ case $1 in
 	test-unit)
 		test_unit
 	;;
-	tag-remote-image)
-		tag_remote_image
+	tag-remote-base-image)
+		tag_remote_base_image
 	;;
 	*)
 		echo "Invalid parameter. Aborting!"
