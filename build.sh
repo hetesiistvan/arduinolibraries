@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 build_image() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local build
