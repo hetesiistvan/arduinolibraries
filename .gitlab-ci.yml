@@ -20,7 +20,6 @@ build-image:
   only:
     - master
   script:
-    - ls -l
     - ./build.sh build-image
     - docker push $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
 
