@@ -3,24 +3,29 @@
 build_image() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local build
-		CONTAINER_TAGS="arduinobuild --tag arduinobuild:latest"
+		BUILD_IMAGE_TAG="arduinobuild:latest"
 	else
 		# Gitlab build
-		CONTAINER_TAGS="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
+		BUILD_IMAGE_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
 	fi
 
-	docker build --tag ${CONTAINER_TAGS} .
+	docker build --tag ${BUILD_IMAGE_TAG} .
 }
 
 test_image() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local test
-		CONTAINER_TAG="arduinobuild"
+		BUILD_IMAGE_TAG="arduinobuild:latest"
 	else
 		# Gitlab test
-		CONTAINER_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
+		BUILD_IMAGE_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
 	fi
-	echo "To be implemented"
+
+	mkdir -p build
+	cp -f build-test.ino build/build-test.ino
+	cp -f build-test-wrapper.sh build/build-test-wrapper.sh
+
+	docker run --rm -v `pwd`/build:/build $BUILD_IMAGE_TAG ./build/build-test-wrapper.sh
 }
 
 case $1 in
