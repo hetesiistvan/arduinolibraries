@@ -11,11 +11,11 @@ select_image_source() {
 	# unless the --remote-image command line parameter is specified
 	if [ ! -z $CI_PROJECT_PATH ]; then
 		echo "CI build, pulling remote image"
-		USE_LIBRARY_REMOTE_IMAGE=true
+		USE_BASE_REMOTE_IMAGE=true
 	fi
 	if [ "--remote-base-image" = "$2" ]; then
 		echo "Local build using remote image"
-		USE_LIBRARY_REMOTE_IMAGE=true
+		USE_BASE_REMOTE_IMAGE=true
 	fi
 }
 
@@ -53,7 +53,7 @@ prepare_dockerfile() {
 		BASE_IMAGE_TAG=arduinobuild:latest
 	fi
 
-	sed -e s/@image@/$BASE_IMAGE_TAG/ Dockerfile.template > Dockerfile
+	sed -e s!@image@!$BASE_IMAGE_TAG! Dockerfile.template > Dockerfile
 }
 
 build_image() {
