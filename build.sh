@@ -1,6 +1,31 @@
 #!/bin/sh
 
-BASE_IMAGE=registry.gitlab.com/hetesiistvan/arduino-arduinoci/arduinobuild:latest
+set -e
+
+BASE_REMOTE_IMAGE=registry.gitlab.com/hetesiistvan/arduino-arduinoci/arduinobuild:latest
+USE_BASE_REMOTE_IMAGE=false
+
+select_image_source() {
+	# In case of CI build we always pull the needed image
+	# But in case of local build we take the locally available image and don't pull that
+	# unless the --remote-image command line parameter is specified
+	if [ ! -z $CI_PROJECT_PATH ]; then
+		echo "CI build, pulling remote image"
+		USE_LIBRARY_REMOTE_IMAGE=true
+	fi
+	if [ "--remote-base-image" = "$2" ]; then
+		echo "Local build using remote image"
+		USE_LIBRARY_REMOTE_IMAGE=true
+	fi
+}
+
+prepare_base_image() {
+	if [ $USE_BASE_REMOTE_IMAGE = "true" ]; then
+		pull_base_image
+	else
+		echo "Using local image"
+	fi
+}
 
 pull_base_image() {
 	if [ -z $CI_PROJECT_PATH ]; then
@@ -14,35 +39,36 @@ pull_base_image() {
 		docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWD} registry.gitlab.com
 	fi
 
-	docker pull $BASE_IMAGE
-
-	if [ ! -z $CI_PROJECT_PATH ]; then
-		# In case of CI build we need to tag the pulled image in order to have a reference
-		# what can be used with the Dockerfile
-		tag_remote_base_image
-	fi
+	docker pull $BASE_REMOTE_IMAGE
 
 	if [ -z $CI_PROJECT_PATH ]; then
 		docker logout
 	fi
 }
 
-tag_remote_base_image() {
-	docker tag $BASE_IMAGE arduinobuild:latest
+prepare_dockerfile() {
+	if [ $USE_BASE_REMOTE_IMAGE = "true" ]; then
+		BASE_IMAGE_TAG=$BASE_REMOTE_IMAGE
+	else
+		BASE_IMAGE_TAG=arduinobuild:latest
+	fi
+
+	sed -e s/@image@/$BASE_IMAGE_TAG/ Dockerfile.template > Dockerfile
 }
 
 build_image() {
-	pull_base_image
+	prepare_base_image
+	prepare_dockerfile
 
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local build
-		CONTAINER_TAGS="arduinolibraries --tag arduinolibraries:latest"
+		LIBRARY_IMAGE_TAG="arduinolibraries:latest"
 	else
 		# Gitlab build
-		CONTAINER_TAGS="$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA"
+		LIBRARY_IMAGE_TAG="$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA"
 	fi
 
-	docker build --tag ${CONTAINER_TAGS} .
+	docker build --tag ${LIBRARY_IMAGE_TAG} .
 }
 
 build_libraries() {
@@ -94,6 +120,8 @@ create_desktop_links() {
 	fi
 }
 
+select_image_source $@
+
 case $1 in
 	build-image)
 		build_image
@@ -103,9 +131,6 @@ case $1 in
 	;;
 	test-unit)
 		test_unit
-	;;
-	tag-remote-base-image)
-		tag_remote_base_image
 	;;
 	create-desktop-links)
 		create_desktop_links
