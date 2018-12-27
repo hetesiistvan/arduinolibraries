@@ -5,18 +5,9 @@ ARDUINO_LIBRARY_FOLDER=/opt/arduino-libraries \
 ARDUINO_UTILS_FOLDER=/opt/arduino-utils \
 ARDUINO_IDE_VERSION=1.8.8
 
-RUN apt-get update && \
-apt-get install -y build-essential gcc-avr xz-utils && \
-apt-get clean && \
+RUN apt-get -q update && \
+apt-get install -q -y gcc-avr avr-libc gcc g++ libc6-dev && \
+apt-get -q clean && \
 rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p ${ARDUINO_LIBRARY_FOLDER} ${ARDUINO_UTILS_FOLDER}
-
-ADD https://www.arduino.cc/download.php?f=/arduino-${ARDUINO_IDE_VERSION}-linux64.tar.xz /tmp/arduino-${ARDUINO_IDE_VERSION}-linux64.tar.xz
-RUN cd /tmp && \
-xz -dc arduino-${ARDUINO_IDE_VERSION}-linux64.tar.xz | \
-tar xf - && \
-mv /tmp/arduino-${ARDUINO_IDE_VERSION} ${ARDUINO_IDE_HOME} && \
-rm -f /tmp/arduino-${ARDUINO_IDE_VERSION}-linux64.tar.xz
-
-ADD buildsketch.sh ${ARDUINO_UTILS_FOLDER}/
+COPY build/image .
