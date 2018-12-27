@@ -7,6 +7,7 @@ stages:
   - build
   - test
   - publish
+  - trigger
 
 variables:
   CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
@@ -38,3 +39,10 @@ tag-and-push-image:
     - docker pull $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
     - docker tag $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA $CONTAINER_IMAGE/arduinobuild:latest
     - docker push $CONTAINER_IMAGE/arduinobuild:latest
+
+trigger-library-build:
+  stage: trigger
+  only:
+    - master
+  script:
+    - docker run --rm appropriate/curl:latest -X POST -F token=$LIBRARY_BUILD_TOKEN -F ref=master https://gitlab.com/api/v4/projects/9940171/trigger/pipeline
