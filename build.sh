@@ -35,6 +35,9 @@ calculate_image_tags() {
 
 		BASE_IMAGE_TAG=${BASE_IMAGE_REPO_URL}${BASE_IMAGE_TAG_PROPERTY}
 	fi
+
+	echo "Using base image: $BASE_IMAGE_TAG"
+	echo "Using library image: $LIBRARY_IMAGE_TAG"
 }
 
 prepare_base_image() {
