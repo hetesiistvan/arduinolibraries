@@ -11,6 +11,9 @@ calculate_image_tags() {
 	else
 		# Gitlab build
 		BUILD_IMAGE_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
+
+		# Print the build ID - ATM only for investigation
+		echo "Build ID: $CI_PIPELINE_IID"
 	fi
 }
 
@@ -44,6 +47,12 @@ test_image() {
 	docker run --rm -v `pwd`/build/test:/build $BUILD_IMAGE_TAG ./build/build-test-wrapper.sh
 }
 
+usage() {
+	echo "Usage:"
+	echo "  build.sh build-image"
+	echo "  build.sh test-image"
+}
+
 calculate_image_tags $@
 
 case $1 in
@@ -55,6 +64,7 @@ case $1 in
 	;;
 	*)
 		echo "Invalid parameter given. Aborting!"
+		usage
 		exit 1
 	;;
 esac
