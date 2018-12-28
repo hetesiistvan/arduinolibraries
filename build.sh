@@ -2,20 +2,38 @@
 
 set -e
 
-BASE_REMOTE_IMAGE=registry.gitlab.com/hetesiistvan/arduino-arduinoci/arduinobuild:latest
+BASE_IMAGE_REPO_URL=registry.gitlab.com/hetesiistvan/arduino-arduinoci/
 USE_BASE_REMOTE_IMAGE=false
 
-select_image_source() {
+read_build_property() {
+	awk -F '=' "/$1/{ print \$2 }" build.properties
+}
+
+calculate_image_tags() {
+	BASE_IMAGE_TAG_PROPERTY=`read_build_property "BASE_IMAGE_TAG"`
+	BASE_IMAGE_TAG=$BASE_IMAGE_TAG_PROPERTY
+
 	# In case of CI build we always pull the needed image
 	# But in case of local build we take the locally available image and don't pull that
 	# unless the --remote-image command line parameter is specified
 	if [ ! -z $CI_PROJECT_PATH ]; then
 		echo "CI build, pulling remote image"
 		USE_BASE_REMOTE_IMAGE=true
+
+		BASE_IMAGE_TAG=${BASE_IMAGE_REPO_URL}${BASE_IMAGE_TAG_PROPERTY}
+
+		# By CI build we tag the image with the commit SHA
+		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+	else {
+		# Local build
+		LIBRARY_IMAGE_TAG=arduinolibraries:latest
+	}
 	fi
 	if [ "--remote-base-image" = "$2" ]; then
 		echo "Local build using remote image"
 		USE_BASE_REMOTE_IMAGE=true
+
+		BASE_IMAGE_TAG=${BASE_IMAGE_REPO_URL}${BASE_IMAGE_TAG_PROPERTY}
 	fi
 }
 
@@ -39,7 +57,7 @@ pull_base_image() {
 		docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWD} registry.gitlab.com
 	fi
 
-	docker pull $BASE_REMOTE_IMAGE
+	docker pull $BASE_IMAGE_TAG
 
 	if [ -z $CI_PROJECT_PATH ]; then
 		docker logout
@@ -47,12 +65,6 @@ pull_base_image() {
 }
 
 prepare_dockerfile() {
-	if [ $USE_BASE_REMOTE_IMAGE = "true" ]; then
-		BASE_IMAGE_TAG=$BASE_REMOTE_IMAGE
-	else
-		BASE_IMAGE_TAG=arduinobuild:latest
-	fi
-
 	sed -e s!@image@!$BASE_IMAGE_TAG! Dockerfile.template > Dockerfile
 }
 
@@ -60,26 +72,10 @@ build_image() {
 	prepare_base_image
 	prepare_dockerfile
 
-	if [ -z $CI_PROJECT_PATH ]; then
-		# Local build
-		LIBRARY_IMAGE_TAG="arduinolibraries:latest"
-	else
-		# Gitlab build
-		LIBRARY_IMAGE_TAG="$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA"
-	fi
-
 	docker build --tag ${LIBRARY_IMAGE_TAG} .
 }
 
 build_libraries() {
-	if [ -z $CI_PROJECT_PATH ]; then
-		# Local build
-		LIBRARY_IMAGE_TAG=arduinolibraries:latest
-	else
-		# CI build
-		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
-	fi
-
 	mkdir -p build
 	find src -name '*.h' -exec basename {} \; | awk '{ print "#include <" $1 ">" }' > build/build-test.ino
 	cat << EOF >> build/build-test.ino
@@ -131,7 +127,7 @@ create_desktop_links() {
 	fi
 }
 
-select_image_source $@
+calculate_image_tags $@
 
 case $1 in
 	build-image)
