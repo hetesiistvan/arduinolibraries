@@ -75,6 +75,7 @@ prepare_dockerfile() {
 }
 
 build_image() {
+	calculate_image_tags $@
 	prepare_base_image
 	prepare_dockerfile
 
@@ -82,6 +83,8 @@ build_image() {
 }
 
 build_libraries() {
+	calculate_image_tags $@
+
 	mkdir -p build
 	find src -name '*.h' -exec basename {} \; | awk '{ print "#include <" $1 ">" }' > build/build-test.ino
 	cat << EOF >> build/build-test.ino
@@ -103,6 +106,7 @@ EOF
 }
 
 test_unit() {
+	calculate_image_tags $@
 	echo "To be implemented"
 }
 
@@ -143,16 +147,13 @@ usage() {
 
 case $1 in
 	build-image)
-		calculate_image_tags $@
-		build_image
+		build_image $@
 	;;
 	build-libraries)
-		calculate_image_tags $@
-		build_libraries
+		build_libraries $@
 	;;
 	test-unit)
-		calculate_image_tags $@
-		test_unit
+		test_unit $@
 	;;
 	create-desktop-links)
 		create_desktop_links
