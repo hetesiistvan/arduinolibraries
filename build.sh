@@ -107,7 +107,18 @@ test_unit() {
 create_desktop_links() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# This is only available in local development environment
-		ARDUINO_HOME_DIRECTORY=~/Arduino/libraries
+		case `uname -s` in
+			Linux)
+				ARDUINO_HOME_DIRECTORY=~/Arduino/libraries
+			;;
+			Darwin)
+				ARDUINO_HOME_DIRECTORY=~/Documents/Arduino/libraries
+			;;
+			*)
+				echo "Not supported OS version. Aborting!"
+				exit 1
+			;;
+		esac
 
 		cd src
 		for DIR_NAME in `ls -1 .`; do

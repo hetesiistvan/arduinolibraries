@@ -15,6 +15,7 @@ stages:
 - test
 - publish
 - trigger
+- promote
 
 build-image:
   stage: build-image
@@ -55,3 +56,13 @@ trigger-library-build:
     - master
   script:
     - docker run --rm appropriate/curl:latest -X POST -F token=$SERIAL_CONTROL_TEST_BUILD_TOKEN -F ref=master https://gitlab.com/api/v4/projects/7354937/trigger/pipeline
+
+promote-image:
+  stage: promote
+  only:
+    - master
+  when: manual
+  script:
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:latest
+    - docker tag $CONTAINER_IMAGE/arduinolibraries:latest $CONTAINER_IMAGE/arduinolibraries:stable
+    - docker push $CONTAINER_IMAGE/arduinolibraries:stable
