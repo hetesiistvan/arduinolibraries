@@ -24,6 +24,9 @@ calculate_image_tags() {
 
 		# By CI build we tag the image with the commit SHA
 		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+
+		# Print the build ID - ATM only for investigation
+		echo "Build ID: $CI_PIPELINE_IID"
 	else {
 		# Local build
 		LIBRARY_IMAGE_TAG=arduinolibraries:latest
@@ -130,16 +133,25 @@ create_desktop_links() {
 	fi
 }
 
-calculate_image_tags $@
+usage() {
+	echo "Usage:"
+	echo "  build.sh build-image [--remote-library-image]"
+	echo "  build.sh build-libraries"
+	echo "  build.sh test-unit"
+	echo "  build.sh create-desktop-links"
+}
 
 case $1 in
 	build-image)
+		calculate_image_tags $@
 		build_image
 	;;
 	build-libraries)
+		calculate_image_tags $@
 		build_libraries
 	;;
 	test-unit)
+		calculate_image_tags $@
 		test_unit
 	;;
 	create-desktop-links)
@@ -147,6 +159,7 @@ case $1 in
 	;;
 	*)
 		echo "Invalid parameter. Aborting!"
+		usage
 		exit 1
 	;;
 esac
