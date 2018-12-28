@@ -53,13 +53,13 @@ usage() {
 	echo "  build.sh test-image"
 }
 
-calculate_image_tags $@
-
 case $1 in
 	build-image)
+		calculate_image_tags $@
 		build_image
 	;;
 	test-image)
+		calculate_image_tags $@
 		test_image
 	;;
 	*)
