@@ -15,11 +15,14 @@ calculate_image_tags() {
 		# Print the build ID - ATM only for investigation
 		echo "Build ID: $CI_PIPELINE_IID"
 	fi
+
+	echo "Build image tag: $BUILD_IMAGE_TAG"
 }
 
 prepare_image_content() {
 	echo "Preparing image content"
 	IMAGE_DIR=build/image
+	rm -rf $IMAGE_DIR
 	mkdir -p $IMAGE_DIR/opt/arduino-libraries
 	mkdir -p $IMAGE_DIR/opt/arduino-utils
 
@@ -34,12 +37,14 @@ prepare_image_content() {
 }
 
 build_image() {
+	calculate_image_tags $@
 	prepare_image_content
 
 	docker build --tag ${BUILD_IMAGE_TAG} .
 }
 
 test_image() {
+	calculate_image_tags $@
 	mkdir -p build/test
 	cp -f build-test.ino build/test/build-test.ino
 	cp -f build-test-wrapper.sh build/test/build-test-wrapper.sh
@@ -55,12 +60,10 @@ usage() {
 
 case $1 in
 	build-image)
-		calculate_image_tags $@
-		build_image
+		build_image $@
 	;;
 	test-image)
-		calculate_image_tags $@
-		test_image
+		test_image $@
 	;;
 	*)
 		echo "Invalid parameter given. Aborting!"
