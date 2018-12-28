@@ -4,6 +4,16 @@ set -e
 
 ARDUINO_IDE_VERSION=1.8.8
 
+calculate_image_tags() {
+	if [ -z $CI_PROJECT_PATH ]; then
+		# Local build
+		BUILD_IMAGE_TAG="arduinobuild:latest"
+	else
+		# Gitlab build
+		BUILD_IMAGE_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
+	fi
+}
+
 prepare_image_content() {
 	echo "Preparing image content"
 	IMAGE_DIR=build/image
@@ -23,32 +33,18 @@ prepare_image_content() {
 build_image() {
 	prepare_image_content
 
-	if [ -z $CI_PROJECT_PATH ]; then
-		# Local build
-		BUILD_IMAGE_TAG="arduinobuild:latest"
-	else
-		# Gitlab build
-		BUILD_IMAGE_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
-	fi
-
 	docker build --tag ${BUILD_IMAGE_TAG} .
 }
 
 test_image() {
-	if [ -z $CI_PROJECT_PATH ]; then
-		# Local test
-		BUILD_IMAGE_TAG="arduinobuild:latest"
-	else
-		# Gitlab test
-		BUILD_IMAGE_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
-	fi
-
 	mkdir -p build/test
 	cp -f build-test.ino build/test/build-test.ino
 	cp -f build-test-wrapper.sh build/test/build-test-wrapper.sh
 
 	docker run --rm -v `pwd`/build/test:/build $BUILD_IMAGE_TAG ./build/build-test-wrapper.sh
 }
+
+calculate_image_tags $@
 
 case $1 in
 	build-image)
