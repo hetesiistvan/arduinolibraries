@@ -26,7 +26,7 @@ calculate_image_tags() {
 		BUILD_IMAGE_TAG="arduinobuild:latest"
 	else
 		# Gitlab build
-		BUILD_IMAGE_TAG=$CONTAINER_IMAGE/arduinobuild:`build_version`
+		BUILD_IMAGE_TAG=$CONTAINER_IMAGE_CI:`build_version`
 
 		# Print the build ID - ATM only for investigation
 		echo "Build ID: $CI_PIPELINE_IID"

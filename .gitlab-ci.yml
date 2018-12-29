@@ -8,10 +8,12 @@ stages:
   - test
   - publish
   - trigger
-  - promote
+  - promote_testing
+  - promote_stable
 
 variables:
-  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH/arduinobuild
+  CONTAINER_IMAGE_CI: registry.gitlab.com/$CI_PROJECT_PATH/arduinobuild-ci
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -22,14 +24,14 @@ build-image:
     - master
   script:
     - ./build.sh build-image
-    - docker push $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
+    - docker push $CONTAINER_IMAGE_CI:`./build.sh build-version`
 
 test-image:
   stage: test
   only:
     - master
   script:
-    - docker pull $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
     - ./build.sh test-image
 
 tag-and-push-image:
@@ -37,9 +39,9 @@ tag-and-push-image:
   only:
     - master
   script:
-    - docker pull $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
-    - docker tag $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version` $CONTAINER_IMAGE/arduinobuild:latest
-    - docker push $CONTAINER_IMAGE/arduinobuild:latest
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE_CI:`./build.sh build-version` $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:latest
 
 trigger-library-build:
   stage: trigger
@@ -48,12 +50,22 @@ trigger-library-build:
   script:
     - docker run --rm appropriate/curl:latest -X POST -F token=$LIBRARY_BUILD_TOKEN -F ref=master https://gitlab.com/api/v4/projects/9940171/trigger/pipeline
 
-promote-image:
-  stage: promote
+preserve-image:
+  stage: promote_testing
   only:
     - master
   when: manual
   script:
-    - docker pull $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
-    - docker tag $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version` $CONTAINER_IMAGE/arduinobuild:stable
-    - docker push $CONTAINER_IMAGE/arduinobuild:stable
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE_CI:`./build.sh build-version` $CONTAINER_IMAGE:`./build.sh build-version`
+    - docker push $CONTAINER_IMAGE:`./build.sh build-version`
+
+promote-image-stable:
+  stage: promote_stable
+  only:
+    - master
+  when: manual
+  script:
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE_CI:`./build.sh build-version` $CONTAINER_IMAGE:stable
+    - docker push $CONTAINER_IMAGE:stable
