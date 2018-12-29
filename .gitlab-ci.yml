@@ -48,6 +48,7 @@ push-image:
   script:
     - docker pull $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
     - docker tag $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA $CONTAINER_IMAGE/arduinolibraries:latest
+    - docker tag $CONTAINER_IMAGE/arduinolibraries:latest $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
     - docker push $CONTAINER_IMAGE/arduinolibraries:latest
     - docker push $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
 
