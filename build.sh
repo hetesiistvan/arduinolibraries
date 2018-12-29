@@ -35,7 +35,7 @@ calculate_image_tags() {
 		BASE_IMAGE_TAG=${BASE_IMAGE_REPO_URL}${BASE_IMAGE_TAG_PROPERTY}
 
 		# By CI build we tag the image with the build number
-		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:`build_version`
+		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE_CI:`build_version`
 
 		# Print the build ID - ATM only for investigation
 		echo "Build ID: $CI_PIPELINE_IID"
