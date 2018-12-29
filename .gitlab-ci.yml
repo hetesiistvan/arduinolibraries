@@ -22,14 +22,14 @@ build-image:
     - master
   script:
     - ./build.sh build-image
-    - docker push $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
 
 test-image:
   stage: test
   only:
     - master
   script:
-    - docker pull $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
+    - docker pull $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
     - ./build.sh test-image
 
 tag-and-push-image:
@@ -37,8 +37,8 @@ tag-and-push-image:
   only:
     - master
   script:
-    - docker pull $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA
-    - docker tag $CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA $CONTAINER_IMAGE/arduinobuild:latest
+    - docker pull $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version` $CONTAINER_IMAGE/arduinobuild:latest
     - docker push $CONTAINER_IMAGE/arduinobuild:latest
 
 trigger-library-build:
@@ -54,6 +54,6 @@ promote-image:
     - master
   when: manual
   script:
-    - docker pull $CONTAINER_IMAGE/arduinobuild:latest
-    - docker tag $CONTAINER_IMAGE/arduinobuild:latest $CONTAINER_IMAGE/arduinobuild:stable
+    - docker pull $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE/arduinobuild:`./build.sh build-version` $CONTAINER_IMAGE/arduinobuild:stable
     - docker push $CONTAINER_IMAGE/arduinobuild:stable

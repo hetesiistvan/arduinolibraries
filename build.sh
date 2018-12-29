@@ -4,13 +4,29 @@ set -e
 
 ARDUINO_IDE_VERSION=1.8.8
 
+read_build_property() {
+	awk -F '=' "/$1/{ print \$2 }" build.properties
+}
+
+build_version() {
+	if [ -z $CI_PROJECT_PATH ]; then
+		# Local build - This function is intended to be used only with CI build
+		echo "-"
+		return
+	else
+		BUILD_VERSION_BASE=`read_build_property "BUILD_VERSION_BASE"`
+		BUILD_VERSION=${BUILD_VERSION_BASE}.${CI_PIPELINE_IID}
+		echo $BUILD_VERSION
+	fi
+}
+
 calculate_image_tags() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# Local build
 		BUILD_IMAGE_TAG="arduinobuild:latest"
 	else
 		# Gitlab build
-		BUILD_IMAGE_TAG="$CONTAINER_IMAGE/arduinobuild:$CI_COMMIT_SHA"
+		BUILD_IMAGE_TAG=$CONTAINER_IMAGE/arduinobuild:`build_version`
 
 		# Print the build ID - ATM only for investigation
 		echo "Build ID: $CI_PIPELINE_IID"
@@ -56,6 +72,7 @@ usage() {
 	echo "Usage:"
 	echo "  build.sh build-image"
 	echo "  build.sh test-image"
+	echo "  build.sh build-version"
 }
 
 case $1 in
@@ -64,6 +81,9 @@ case $1 in
 	;;
 	test-image)
 		test_image $@
+	;;
+	build-version)
+		build_version
 	;;
 	*)
 		echo "Invalid parameter given. Aborting!"
