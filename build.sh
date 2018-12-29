@@ -9,6 +9,18 @@ read_build_property() {
 	awk -F '=' "/$1/{ print \$2 }" build.properties
 }
 
+build_version() {
+	if [ -z $CI_PROJECT_PATH ]; then
+		# Local build - This function is intended to be used only with CI build
+		echo "-"
+		return
+	else
+		BUILD_VERSION_BASE=`read_build_property "BUILD_VERSION_BASE"`
+		BUILD_VERSION=${BUILD_VERSION_BASE}.${CI_PIPELINE_IID}
+		echo $BUILD_VERSION
+	fi
+}
+
 calculate_image_tags() {
 	BASE_IMAGE_TAG_PROPERTY=`read_build_property "BASE_IMAGE_TAG"`
 	BASE_IMAGE_TAG=$BASE_IMAGE_TAG_PROPERTY
@@ -22,8 +34,8 @@ calculate_image_tags() {
 
 		BASE_IMAGE_TAG=${BASE_IMAGE_REPO_URL}${BASE_IMAGE_TAG_PROPERTY}
 
-		# By CI build we tag the image with the commit SHA
-		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+		# By CI build we tag the image with the build number
+		LIBRARY_IMAGE_TAG=$CONTAINER_IMAGE/arduinolibraries:`build_version`
 
 		# Print the build ID - ATM only for investigation
 		echo "Build ID: $CI_PIPELINE_IID"
@@ -108,18 +120,6 @@ EOF
 test_unit() {
 	calculate_image_tags $@
 	echo "To be implemented"
-}
-
-build_version() {
-	if [ -z $CI_PROJECT_PATH ]; then
-		# Local build - This function is intended to be used only with CI build
-		echo "-"
-		return
-	else
-		BUILD_VERSION_BASE=`read_build_property "BUILD_VERSION_BASE"`
-		BUILD_VERSION=${BUILD_VERSION_BASE}.${CI_PIPELINE_IID}
-		echo $BUILD_VERSION
-	fi
 }
 
 create_desktop_links() {
