@@ -23,14 +23,14 @@ build-image:
     - master
   script:
     - ./build.sh build-image
-    - docker push $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
 
 build-libraries:
   stage: build-libraries
   only:
     - master
   script:
-    - docker pull $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
     - ./build.sh build-libraries
 
 test-unit:
@@ -38,7 +38,7 @@ test-unit:
   only:
     - master
   script:
-    - docker pull $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
     - ./build.sh build-libraries
 
 push-image:
@@ -46,11 +46,9 @@ push-image:
   only:
     - master
   script:
-    - docker pull $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA
-    - docker tag $CONTAINER_IMAGE/arduinolibraries:$CI_COMMIT_SHA $CONTAINER_IMAGE/arduinolibraries:latest
-    - docker tag $CONTAINER_IMAGE/arduinolibraries:latest $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version` $CONTAINER_IMAGE/arduinolibraries:latest
     - docker push $CONTAINER_IMAGE/arduinolibraries:latest
-    - docker push $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
 
 trigger-library-build:
   stage: trigger
@@ -65,6 +63,6 @@ promote-image:
     - master
   when: manual
   script:
-    - docker pull $CONTAINER_IMAGE/arduinolibraries:latest
-    - docker tag $CONTAINER_IMAGE/arduinolibraries:latest $CONTAINER_IMAGE/arduinolibraries:stable
+    - docker pull $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE/arduinolibraries:`./build.sh build-version` $CONTAINER_IMAGE/arduinolibraries:stable
     - docker push $CONTAINER_IMAGE/arduinolibraries:stable
