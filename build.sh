@@ -110,6 +110,18 @@ test_unit() {
 	echo "To be implemented"
 }
 
+build_version() {
+	if [ -z $CI_PROJECT_PATH ]; then
+		# Local build - This function is intended to be used only with CI build
+		echo "-"
+		return
+	else
+		BUILD_VERSION_BASE=`read_build_property "BUILD_VERSION_BASE"`
+		BUILD_VERSION=${BUILD_VERSION_BASE}.${CI_PIPELINE_IID}
+		echo $BUILD_VERSION
+	fi
+}
+
 create_desktop_links() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# This is only available in local development environment
@@ -142,6 +154,7 @@ usage() {
 	echo "  build.sh build-image [--remote-library-image]"
 	echo "  build.sh build-libraries"
 	echo "  build.sh test-unit"
+	echo "  build.sh build-version"
 	echo "  build.sh create-desktop-links"
 }
 
@@ -154,6 +167,9 @@ case $1 in
 	;;
 	test-unit)
 		test_unit $@
+	;;
+	build-version)
+		build_version
 	;;
 	create-desktop-links)
 		create_desktop_links
