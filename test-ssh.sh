@@ -2,6 +2,6 @@
 
 set -e
 
-/setup-ssh-key.sh
+source /setup-ssh-key.sh
 
 ssh -T git@gitlab.com

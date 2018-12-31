@@ -1,6 +1,7 @@
 #!/bin/sh
 
-if [ -z $SSH_DEPLOY_PRIVATE_KEY ]; then
+if [ "${SSH_DEPLOY_PRIVATE_KEY}a" = "a" ]
+then
 	echo "SSH private key is not available. Aborting!"
 	exit 1
 fi
