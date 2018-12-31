@@ -1,0 +1,63 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - publish
+  - promote_testing
+  - promote_stable
+
+variables:
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH/gitlabcibase
+  CONTAINER_IMAGE_CI: registry.gitlab.com/$CI_PROJECT_PATH/gitlabcibase-ci
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+build-image:
+  stage: build
+  only:
+    - master
+  script:
+    - ./build.sh build-image
+    - docker push $CONTAINER_IMAGE_CI:`./build.sh build-version`
+
+test-image:
+  stage: test
+  only:
+    - master
+  script:
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
+    - ./build.sh test-image
+
+tag-and-push-image:
+  stage: publish
+  only:
+    - master
+  script:
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE_CI:`./build.sh build-version` $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:latest
+
+preserve-image:
+  stage: promote_testing
+  only:
+    - master
+  when: manual
+  script:
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE_CI:`./build.sh build-version` $CONTAINER_IMAGE:`./build.sh build-version`
+    - docker push $CONTAINER_IMAGE:`./build.sh build-version`
+
+promote-image-stable:
+  stage: promote_stable
+  only:
+    - master
+  when: manual
+  script:
+    - docker pull $CONTAINER_IMAGE_CI:`./build.sh build-version`
+    - docker tag $CONTAINER_IMAGE_CI:`./build.sh build-version` $CONTAINER_IMAGE:stable
+    - docker push $CONTAINER_IMAGE:stable
