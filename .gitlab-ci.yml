@@ -1,4 +1,4 @@
-image: docker:stable
+image: hetesiistvan/arduinobuild-base:stable
 
 services:
   - docker:dind
@@ -57,7 +57,7 @@ trigger-library-build:
   only:
     - master
   script:
-    - docker run --rm appropriate/curl:latest -X POST -F token=$SERIAL_CONTROL_TEST_BUILD_TOKEN -F ref=master https://gitlab.com/api/v4/projects/7354937/trigger/pipeline
+    - curl -X POST -F token=$SERIAL_CONTROL_TEST_BUILD_TOKEN -F ref=master https://gitlab.com/api/v4/projects/7354937/trigger/pipeline
 
 preserve-image:
   stage: promote_testing
