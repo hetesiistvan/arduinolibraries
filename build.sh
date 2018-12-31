@@ -47,7 +47,7 @@ test_image() {
 		mkdir -p build/test
 		cp -f test-ssh.sh build/test/test-ssh.sh
 
-		docker run --rm -v `pwd`/build/test:/build -e SSH_DEPLOY_PRIVATE_KEY=$SSH_DEPLOY_PRIVATE_KEY $BUILD_IMAGE_TAG ./build/test-ssh.sh
+		docker run --rm -v `pwd`/build/test:/build -e SSH_DEPLOY_PRIVATE_KEY $BUILD_IMAGE_TAG ./build/test-ssh.sh
 	else
 		echo "Local testing not supported."
 	fi
