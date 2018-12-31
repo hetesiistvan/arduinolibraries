@@ -122,6 +122,29 @@ test_unit() {
 	echo "To be implemented"
 }
 
+push_version_tag() {
+	if [ ! -z $CI_PROJECT_PATH ]; then
+		# This can be used only in CI environment
+
+		# Setting up SSH parameters
+		source /setup-ssh-key.sh
+
+		VERSION_TAG=`build_version`
+		ALREADY_TAGGED=`git tag | grep $VERSION_TAG | wc -l`
+
+		if [ $ALREADY_TAGGED -eq 1 ]; then
+			echo "The branch has already the version tag."
+			exit 1
+		fi
+
+		git remote add gitlab git@gitlab.com:hetesiistvan/arduino-arduinolibraries
+		git tag $VERSION_TAG
+		git push gitlab $VERSION_TAG
+	else
+		echo "Not supported in local development environment."
+	fi
+}
+
 create_desktop_links() {
 	if [ -z $CI_PROJECT_PATH ]; then
 		# This is only available in local development environment
@@ -155,6 +178,7 @@ usage() {
 	echo "  build.sh build-libraries"
 	echo "  build.sh test-unit"
 	echo "  build.sh build-version"
+	echo "  build.sh push-version-tag"
 	echo "  build.sh create-desktop-links"
 }
 
@@ -170,6 +194,9 @@ case $1 in
 	;;
 	build-version)
 		build_version
+	;;
+	push-version-tag)
+		push_version_tag
 	;;
 	create-desktop-links)
 		create_desktop_links

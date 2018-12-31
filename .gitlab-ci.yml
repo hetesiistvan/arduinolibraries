@@ -52,6 +52,13 @@ push-image:
     - docker tag $CONTAINER_IMAGE_CI:`./build.sh build-version` $CONTAINER_IMAGE:latest
     - docker push $CONTAINER_IMAGE:latest
 
+push-git-tag:
+  stage: publish
+  only:
+    - master
+  script:
+    - ./build.sh push-version-tag
+
 trigger-library-build:
   stage: trigger
   only:
