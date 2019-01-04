@@ -3,13 +3,13 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/Libraries/**",
-				"${workspaceFolder}/CommandHandler",
-				"${workspaceFolder}/Drivers",
-                "${workspaceFolder}/FlowUtils",
-                "${workspaceFolder}/Logger",
-                "${workspaceFolder}/SerialInputHandler",
-                "${workspaceFolder}/Utils",
+                "${workspaceFolder}/src/Libraries/**",
+				"${workspaceFolder}/src/CommandHandler",
+				"${workspaceFolder}/src/Drivers",
+                "${workspaceFolder}/src/FlowUtils",
+                "${workspaceFolder}/src/Logger",
+                "${workspaceFolder}/src/SerialInputHandler",
+                "${workspaceFolder}/src/Utils",
                 "${env:ARDUINO_IDE_HOME}/hardware/arduino/avr/cores/arduino",
                 "${env:ARDUINO_IDE_HOME}/hardware/arduino/avr/variants/standard",
                 "${env:ARDUINO_IDE_HOME}/hardware/tools/avr/avr/include"
